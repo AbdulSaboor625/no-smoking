@@ -24,4 +24,4 @@ cmds = [
 ]
 
 [start]
-cmd = "cd apps/backend && pnpm start"
+cmd = "cd apps/backend && pnpm db:migrate && pnpm start"
