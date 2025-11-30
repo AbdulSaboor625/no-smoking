@@ -1,0 +1,27 @@
+import { initTRPC, TRPCError } from '@trpc/server';
+import type { Context } from './context.js';
+
+const t = initTRPC.context<Context>().create();
+
+// Base router and procedure
+export const router = t.router;
+export const publicProcedure = t.procedure;
+
+// Protected procedure (requires authentication)
+export const protectedProcedure = t.procedure.use(async (opts) => {
+  const { ctx } = opts;
+
+  if (!ctx.userId) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You must be logged in to access this resource',
+    });
+  }
+
+  return opts.next({
+    ctx: {
+      ...ctx,
+      userId: ctx.userId, // TypeScript now knows userId is defined
+    },
+  });
+});

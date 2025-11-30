@@ -1,0 +1,1 @@
+ALTER TABLE "daily_commitments" ADD CONSTRAINT "daily_commitments_user_id_commitment_date_unique" UNIQUE("user_id","commitment_date");

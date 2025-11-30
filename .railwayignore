@@ -1,0 +1,18 @@
+# Ignore Python files - this is a Node.js project
+*.py
+*.pyc
+__pycache__/
+requirements.txt
+tests/
+claude_agent.py
+
+# Ignore development files
+node_modules/
+.turbo/
+*.log
+.env.local
+.env.*.local
+
+# Note: For a single Railway service that runs both frontend and backend,
+# we intentionally include both `apps/frontend` and `apps/backend` so the
+# frontend can be built and copied into the backend's public/ folder.

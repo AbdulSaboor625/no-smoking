@@ -1,0 +1,27 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = [
+  "corepack enable",
+  "corepack prepare pnpm@9.15.0 --activate",
+  "pnpm install --frozen-lockfile"
+]
+
+[phases.build]
+cmds = [
+  # Build shared types first
+  "pnpm --filter=@smoking-quit/shared-types build",
+  # Build frontend with empty VITE_API_URL to use relative URLs in production
+  "VITE_API_URL='' pnpm --filter=@smoking-quit/frontend build",
+  # Build backend after shared packages and frontend
+  "pnpm --filter=@smoking-quit/backend build",
+  # Copy built frontend into backend public/ for Fastify static serving
+  "mkdir -p apps/backend/public",
+  "cp -r apps/frontend/dist/* apps/backend/public/",
+  # List the contents to verify
+  "ls -la apps/backend/public/"
+]
+
+[start]
+cmd = "cd apps/backend && pnpm start"
