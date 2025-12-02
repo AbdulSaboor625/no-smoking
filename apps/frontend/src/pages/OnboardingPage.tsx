@@ -45,7 +45,7 @@ export function OnboardingPage() {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isValidatingEmail, setIsValidatingEmail] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<ProductType | null>(null);
-  const [hoveredNumber, setHoveredNumber] = useState<number | null>(null);
+  const [hoveredNumber, setHoveredNumber] = useState<number | string | null>(null);
 
   // Load saved progress from localStorage
   const [formData, setFormData] = useState<OnboardingFormData>(() => {
@@ -288,7 +288,18 @@ export function OnboardingPage() {
   const getHabitStats = () => {
     const dailyNum = parseFloat(formData.weeklyUsage) || 0;
     const monthlyNum = parseFloat(formData.monthlySpending) || 0;
-    const durationNum = parseFloat(formData.duration) || 0;
+    // Convert duration string to numeric value for calculations
+    let durationNum = 0;
+    if (formData.duration === 'less_than_10') {
+      durationNum = 5; // Average of 0-10 years
+    } else if (formData.duration === '10_to_20') {
+      durationNum = 15; // Average of 10-20 years
+    } else if (formData.duration === 'over_20') {
+      durationNum = 25; // Representative value for 20+ years
+    } else {
+      // Fallback for old numeric values
+      durationNum = parseFloat(formData.duration) || 0;
+    }
 
     // weeklyUsage now stores daily usage for all product types
     const yearlyUsage = Math.round(dailyNum * 365); // daily * days in year
@@ -693,20 +704,24 @@ export function OnboardingPage() {
             {/* Step 4: Duration - Interactive Cards */}
             {step === 4 && (
               <div className="space-y-4">
-                <div className="grid grid-cols-5 gap-3">
-                  {[1, 2, 3, 4, 5].map((years) => {
-                    const isSelected = formData.duration === years.toString();
-                    const isHovered = hoveredNumber === years;
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { value: 'less_than_10', label: 'Less than 10 years' },
+                    { value: '10_to_20', label: '10 to 20 Years' },
+                    { value: 'over_20', label: 'Over 20 Years' },
+                  ].map((option) => {
+                    const isSelected = formData.duration === option.value;
+                    const isHovered = hoveredNumber === option.value;
 
                     return (
                       <button
-                        key={years}
+                        key={option.value}
                         type="button"
                         onClick={() => {
-                          setFormData({ ...formData, duration: years.toString() });
+                          setFormData({ ...formData, duration: option.value });
                           setTimeout(nextStep, 300);
                         }}
-                        onMouseEnter={() => setHoveredNumber(years)}
+                        onMouseEnter={() => setHoveredNumber(option.value)}
                         onMouseLeave={() => setHoveredNumber(null)}
                         className={`
                           group relative border-2 rounded-xl p-6 cursor-pointer 
@@ -725,7 +740,7 @@ export function OnboardingPage() {
                           <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
                         )}
                         <div className={`
-                          text-4xl font-bold transition-colors duration-300
+                          text-lg font-bold transition-colors duration-300 text-center
                           ${isSelected 
                             ? 'text-gray-900' 
                             : isHovered 
@@ -733,18 +748,7 @@ export function OnboardingPage() {
                             : 'text-white'
                           }
                         `}>
-                          {years}
-                        </div>
-                        <div className={`
-                          text-xs mt-1 transition-colors duration-300
-                          ${isSelected 
-                            ? 'text-gray-700' 
-                            : isHovered 
-                            ? 'text-white/90' 
-                            : 'text-white/70'
-                          }
-                        `}>
-                          {years === 1 ? 'year' : 'years'}
+                          {option.label}
                         </div>
                         {isSelected && (
                           <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
