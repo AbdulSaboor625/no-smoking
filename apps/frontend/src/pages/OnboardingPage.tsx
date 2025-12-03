@@ -290,12 +290,17 @@ export function OnboardingPage() {
     const monthlyNum = parseFloat(formData.monthlySpending) || 0;
     // Convert duration string to numeric value for calculations
     let durationNum = 0;
-    if (formData.duration === 'less_than_10') {
-      durationNum = 5; // Average of 0-10 years
+    if (formData.duration === 'less_than_5') {
+      durationNum = 2.5; // Average of 0-5 years
+    } else if (formData.duration === '5_to_10') {
+      durationNum = 7.5; // Average of 5-10 years
     } else if (formData.duration === '10_to_20') {
       durationNum = 15; // Average of 10-20 years
     } else if (formData.duration === 'over_20') {
       durationNum = 25; // Representative value for 20+ years
+    } else if (formData.duration === 'less_than_10') {
+      // Legacy support
+      durationNum = 5;
     } else {
       // Fallback for old numeric values
       durationNum = parseFloat(formData.duration) || 0;
@@ -370,7 +375,7 @@ export function OnboardingPage() {
         }
         return 'How long have you been using?';
       case 5:
-        return 'Join - Your information';
+        return 'Create Account';
       case 6:
         return 'Start your journey';
       case 7:
@@ -402,10 +407,10 @@ export function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-2 sm:p-4">
       <Card className="max-w-2xl w-full shadow-2xl border-0" style={{ backgroundColor: '#6B2C91' }}>
-        <CardHeader className="pb-4">
-          <div className="mb-4">
+        <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
+          <div className="mb-3 sm:mb-4">
             <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/20">
               <div 
                 className="h-full bg-[#FFC107] transition-all duration-500 ease-out rounded-full"
@@ -417,25 +422,25 @@ export function OnboardingPage() {
             </p>
           </div>
           {step !== 6 && (
-            <CardTitle className="text-3xl text-center font-bold text-white mb-2">
+            <CardTitle className="text-xl sm:text-2xl md:text-3xl text-center font-bold text-white mb-2 px-2">
               {getStepTitle()}
             </CardTitle>
           )}
           {step !== 6 && getStepDescription() && (
-            <CardDescription className="text-center text-white/90 text-base">
+            <CardDescription className="text-center text-white/90 text-sm sm:text-base px-2">
               {getStepDescription()}
             </CardDescription>
           )}
         </CardHeader>
-        <CardContent className={step === 1 ? "pb-8" : ""}>
+        <CardContent className={`${step === 1 ? "pb-4 sm:pb-8" : ""} px-3 sm:px-6`}>
           <div className="space-y-6">
             {/* Step 1: Product Type - Interactive Cards */}
             {step === 1 && (
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-3">
                 <RadioGroup
                   value={formData.productType || ''}
                   onValueChange={(value) => selectProductType(value as ProductType)}
-                  className="space-y-3"
+                  className="space-y-2 sm:space-y-3"
                 >
                   {productOptions.map((option) => {
                     const isSelected = formData.productType === option.value;
@@ -454,7 +459,7 @@ export function OnboardingPage() {
                         key={option.value}
                         htmlFor={option.value}
                         className={`
-                          group relative border-2 rounded-xl p-5 cursor-pointer 
+                          group relative border-2 rounded-xl p-3 sm:p-4 md:p-5 cursor-pointer 
                           transition-all duration-300 ease-out flex items-center
                           transform hover:scale-[1.02] active:scale-[0.98]
                           ${isSelected
@@ -481,13 +486,13 @@ export function OnboardingPage() {
                         )}
                         
                         {/* Radio button with custom styling */}
-                        <div className="flex items-center space-x-4 flex-1">
+                        <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-1">
                           <div className="relative flex-shrink-0">
                             <RadioGroupItem 
                               value={option.value} 
                               id={option.value} 
                               className={`
-                                w-6 h-6 border-2 transition-all duration-300
+                                w-5 h-5 sm:w-6 sm:h-6 border-2 transition-all duration-300
                                 ${isSelected 
                                   ? 'border-[#AB0FB8] bg-[#AB0FB8]' 
                                   : 'border-white/60 group-hover:border-white'
@@ -496,14 +501,14 @@ export function OnboardingPage() {
                             />
                             {isSelected && (
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-3 h-3 bg-white rounded-full animate-in fade-in zoom-in duration-200" />
+                                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full animate-in fade-in zoom-in duration-200" />
                               </div>
                             )}
                           </div>
                           
                           {/* Product icon */}
                           <div className={`
-                            text-3xl transition-transform duration-300 flex-shrink-0
+                            text-2xl sm:text-3xl transition-transform duration-300 flex-shrink-0
                             ${isHovered || isSelected ? 'scale-110' : 'scale-100'}
                           `}>
                             {productIcons[option.value as keyof typeof productIcons] || '📦'}
@@ -512,7 +517,7 @@ export function OnboardingPage() {
                           {/* Text content */}
                           <div className="flex-1 min-w-0">
                             <div className={`
-                              font-bold text-xl mb-1 transition-colors duration-300
+                              font-bold text-base sm:text-lg md:text-xl mb-0.5 sm:mb-1 transition-colors duration-300
                               ${isSelected 
                                 ? 'text-gray-900' 
                                 : isHovered 
@@ -523,7 +528,7 @@ export function OnboardingPage() {
                               {option.label}
                             </div>
                             <div className={`
-                              text-sm transition-colors duration-300
+                              text-xs sm:text-sm transition-colors duration-300
                               ${isSelected
                                 ? 'text-gray-700'
                                 : isHovered
@@ -537,10 +542,10 @@ export function OnboardingPage() {
                           
                           {/* Selection checkmark */}
                           {isSelected && (
-                            <div className="flex-shrink-0 ml-2">
-                              <div className="w-8 h-8 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                            <div className="flex-shrink-0 ml-1 sm:ml-2">
+                              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
                                 <svg 
-                                  className="w-5 h-5 text-white" 
+                                  className="w-4 h-4 sm:w-5 sm:h-5 text-white" 
                                   fill="none" 
                                   stroke="currentColor" 
                                   viewBox="0 0 24 24"
@@ -566,7 +571,7 @@ export function OnboardingPage() {
             {/* Step 2: Daily Usage - Interactive Cards */}
             {step === 2 && (
               <div className="space-y-4">
-                <div className="grid grid-cols-5 gap-3">
+                <div className="grid grid-cols-5 gap-2 sm:gap-3">
                   {[1, 2, 3, 4, 5].map((num) => {
                     const isSelected = formData.weeklyUsage === num.toString();
                     const isHovered = hoveredNumber === num;
@@ -582,7 +587,7 @@ export function OnboardingPage() {
                         onMouseEnter={() => setHoveredNumber(num)}
                         onMouseLeave={() => setHoveredNumber(null)}
                         className={`
-                          group relative border-2 rounded-xl p-6 cursor-pointer 
+                          group relative border-2 rounded-xl p-3 sm:p-4 md:p-6 cursor-pointer 
                           transition-all duration-300 ease-out
                           transform hover:scale-[1.05] active:scale-[0.95]
                           flex flex-col items-center justify-center
@@ -598,7 +603,7 @@ export function OnboardingPage() {
                           <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
                         )}
                         <div className={`
-                          text-4xl font-bold transition-colors duration-300
+                          text-2xl sm:text-3xl md:text-4xl font-bold transition-colors duration-300
                           ${isSelected 
                             ? 'text-gray-900' 
                             : isHovered 
@@ -609,9 +614,9 @@ export function OnboardingPage() {
                           {num}
                         </div>
                         {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                          <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
                             <svg 
-                              className="w-4 h-4 text-white" 
+                              className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
                               fill="none" 
                               stroke="currentColor" 
                               viewBox="0 0 24 24"
@@ -635,8 +640,8 @@ export function OnboardingPage() {
             {/* Step 3: Cost Per Pack - Interactive Cards */}
             {step === 3 && (
               <div className="space-y-4">
-                <div className="grid grid-cols-5 gap-3">
-                  {[5, 10, 15, 20, 25].map((amount) => {
+                <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                  {[6, 7, 8, 9].map((amount) => {
                     const isSelected = formData.monthlySpending === amount.toString();
                     const isHovered = hoveredNumber === amount;
 
@@ -651,7 +656,7 @@ export function OnboardingPage() {
                         onMouseEnter={() => setHoveredNumber(amount)}
                         onMouseLeave={() => setHoveredNumber(null)}
                         className={`
-                          group relative border-2 rounded-xl p-6 cursor-pointer 
+                          group relative border-2 rounded-xl p-3 sm:p-4 md:p-6 cursor-pointer 
                           transition-all duration-300 ease-out
                           transform hover:scale-[1.05] active:scale-[0.95]
                           flex flex-col items-center justify-center
@@ -667,7 +672,7 @@ export function OnboardingPage() {
                           <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
                         )}
                         <div className={`
-                          text-2xl font-bold transition-colors duration-300
+                          text-lg sm:text-xl md:text-2xl font-bold transition-colors duration-300
                           ${isSelected 
                             ? 'text-gray-900' 
                             : isHovered 
@@ -678,9 +683,9 @@ export function OnboardingPage() {
                           ${amount}
                         </div>
                         {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                          <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
                             <svg 
-                              className="w-4 h-4 text-white" 
+                              className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
                               fill="none" 
                               stroke="currentColor" 
                               viewBox="0 0 24 24"
@@ -704,11 +709,12 @@ export function OnboardingPage() {
             {/* Step 4: Duration - Interactive Cards */}
             {step === 4 && (
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   {[
-                    { value: 'less_than_10', label: 'Less than 10 years' },
-                    { value: '10_to_20', label: '10 to 20 Years' },
-                    { value: 'over_20', label: 'Over 20 Years' },
+                    { value: 'less_than_5', label: 'Less than 5 years' },
+                    { value: '5_to_10', label: '5 to 10 years' },
+                    { value: '10_to_20', label: '10 to 20' },
+                    { value: 'over_20', label: 'Over 20' },
                   ].map((option) => {
                     const isSelected = formData.duration === option.value;
                     const isHovered = hoveredNumber === option.value;
@@ -724,7 +730,7 @@ export function OnboardingPage() {
                         onMouseEnter={() => setHoveredNumber(option.value)}
                         onMouseLeave={() => setHoveredNumber(null)}
                         className={`
-                          group relative border-2 rounded-xl p-6 cursor-pointer 
+                          group relative border-2 rounded-xl p-4 sm:p-5 md:p-6 cursor-pointer 
                           transition-all duration-300 ease-out
                           transform hover:scale-[1.05] active:scale-[0.95]
                           flex flex-col items-center justify-center
@@ -740,7 +746,7 @@ export function OnboardingPage() {
                           <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
                         )}
                         <div className={`
-                          text-lg font-bold transition-colors duration-300 text-center
+                          text-sm sm:text-base md:text-lg font-bold transition-colors duration-300 text-center px-1
                           ${isSelected 
                             ? 'text-gray-900' 
                             : isHovered 
@@ -751,9 +757,9 @@ export function OnboardingPage() {
                           {option.label}
                         </div>
                         {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                          <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
                             <svg 
-                              className="w-4 h-4 text-white" 
+                              className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
                               fill="none" 
                               stroke="currentColor" 
                               viewBox="0 0 24 24"
@@ -776,7 +782,7 @@ export function OnboardingPage() {
 
             {/* Step 5: User Info Form */}
             {step === 5 && (
-              <div className="space-y-6 py-6">
+              <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
                 {/* Two-column layout for name fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -933,29 +939,29 @@ export function OnboardingPage() {
 
             {/* Step 6: Initial Pricing Offer */}
             {step === 6 && !showFlashSale && (
-              <div className="space-y-6 py-6">
-                <div className="text-center space-y-4">
-                  <img src="/logo.png" alt="QuitApp Logo" className="w-32 h-32 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold">ONE TIME OFFER</h3>
+              <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
+                <div className="text-center space-y-3 sm:space-y-4">
+                  <img src="/logo.png" alt="QuitApp Logo" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2 sm:mb-4" />
+                  <h3 className="text-2xl sm:text-3xl font-bold">ONE TIME OFFER</h3>
                   {/* 5-minute countdown timer */}
                   <div className="flex items-center justify-center gap-2 mb-4">
                     <span className="text-lg font-semibold text-white">⏰ Offer expires in:</span>
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-white">
                       {formatTime(timeLeft)}
                     </span>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 rounded-lg p-8 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#AB0FB8' }}>
+                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 rounded-lg p-6 sm:p-8 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
                     {/* Urgency badge */}
-                    <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#AB0FB8' }}>
+                    <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
                       ONE TIME OFFER
                     </div>
 
                     {/* Price display */}
-                    <div className="text-6xl font-bold mb-2 text-gray-900">
+                    <div className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2 text-gray-900">
                       $79
                     </div>
-                    <p className="font-bold text-lg mb-2" style={{ color: '#AB0FB8' }}>Lifetime Access</p>
-                    <p className="font-semibold text-sm" style={{ color: '#890C94' }}>⏰ This offer expires soon!</p>
+                    <p className="font-bold text-base sm:text-lg mb-2" style={{ color: '#FFD700' }}>Lifetime Access</p>
+                    <p className="font-semibold text-sm" style={{ color: '#B8860B' }}>⏰ This offer expires soon!</p>
                   </div>
 
                   {/* Personalized Impact Calculations */}
@@ -986,10 +992,10 @@ export function OnboardingPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-3 shadow-sm border-2 border-purple-300">
+                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-3 shadow-sm border-2 border-yellow-300">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-bold text-gray-800">Your Life</span>
-                            <span className="text-xl font-extrabold" style={{ color: '#AB0FB8' }}>
+                            <span className="text-xl font-extrabold" style={{ color: '#FFD700' }}>
                               priceless
                             </span>
                           </div>
@@ -1020,13 +1026,13 @@ export function OnboardingPage() {
                 <div className="space-y-3">
                   <Button
                     onClick={nextStep}
-                    className="w-full text-white font-bold text-lg"
+                    className="w-full text-white font-bold text-sm sm:text-base md:text-lg px-2 py-4 sm:py-6"
                     style={{
-                      backgroundColor: '#AB0FB8',
+                      backgroundColor: '#FFD700',
                     }}
                     size="lg"
                   >
-                    🚀 BUY NOW FOR $79 - LIMITED TIME OFFER!
+                    <span className="whitespace-nowrap">🚀 BUY NOW FOR $79 - LIMITED TIME OFFER!</span>
                   </Button>
                   <Button
                     onClick={() => {
@@ -1045,13 +1051,13 @@ export function OnboardingPage() {
 
             {/* Flash Sale Page - Emergency Offer */}
             {step === 6 && showFlashSale && (
-              <div className="space-y-4 py-6">
-                <div className="text-center space-y-3">
+              <div className="space-y-3 sm:space-y-4 py-4 sm:py-6">
+                <div className="text-center space-y-2 sm:space-y-3">
                   {/* Emergency Header with Timer */}
-                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#AB0FB8' }}>
-                    <h3 className="text-xl font-bold text-white">⚠️ WAIT! EXCLUSIVE FLASH SALE ⚠️</h3>
+                  <div className="p-3 sm:p-4 rounded-lg" style={{ backgroundColor: '#FFD700' }}>
+                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-white px-1">⚠️ WAIT! EXCLUSIVE FLASH SALE ⚠️</h3>
                     <div className="mt-2 flex items-center justify-center gap-2">
-                      <span className="text-sm text-white/90">⏰ Expires in:</span>
+                      <span className="text-sm font-bold text-white/90">⏰ Expires in:</span>
                       <span className="text-3xl font-bold text-white">
                         {formatTime(timeLeft)}
                       </span>
@@ -1059,35 +1065,35 @@ export function OnboardingPage() {
                   </div>
 
                   {/* Price Comparison + Seats in One Block */}
-                  <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 rounded-lg p-6 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#AB0FB8' }}>
+                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 rounded-lg p-4 sm:p-6 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
                     {/* Flash Sale Badge */}
-                    <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#AB0FB8' }}>
+                    <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
                       75% OFF!
                     </div>
 
                     {/* Old Price Strikethrough */}
                     <div className="relative inline-block mb-2">
-                      <span className="text-3xl font-bold text-gray-400" style={{ textDecoration: 'line-through', textDecorationColor: '#AB0FB8', textDecorationThickness: '3px' }}>
+                      <span className="text-2xl sm:text-3xl font-bold text-gray-400" style={{ textDecoration: 'line-through', textDecorationColor: '#FFD700', textDecorationThickness: '3px' }}>
                         $79
                       </span>
                     </div>
 
                     {/* New Price */}
-                    <div className="text-6xl font-bold mb-2 text-gray-900">
+                    <div className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2 text-gray-900 break-words">
                       $19.99
                     </div>
-                    <p className="font-bold text-lg mb-1" style={{ color: '#AB0FB8' }}>One-time payment</p>
+                    <p className="font-bold text-base sm:text-lg mb-1" style={{ color: '#FFD700' }}>One-time payment</p>
                     <p className="text-sm font-semibold text-orange-600">💥 Save $59.01 today!</p>
 
                     {/* Seats Counter - Compact */}
-                    <div className="mt-3 p-3 rounded-lg" style={{ backgroundColor: '#AB0FB8' }}>
+                    <div className="mt-3 p-3 rounded-lg" style={{ backgroundColor: '#FFD700' }}>
                       {seatsLeft > 1 ? (
                         <div className="flex items-center justify-center gap-2">
-                          <span className="text-3xl font-bold text-white">{seatsLeft}</span>
-                          <span className="text-sm font-bold text-white">SEATS LEFT</span>
+                          <span className="text-2xl sm:text-3xl font-bold text-white">{seatsLeft}</span>
+                          <span className="text-xs sm:text-sm font-bold text-white">SEATS LEFT</span>
                         </div>
                       ) : (
-                        <p className="text-sm font-bold text-white">✅ Your spot is RESERVED!</p>
+                        <p className="text-xs sm:text-sm font-bold text-white">✅ Your spot is RESERVED!</p>
                       )}
                     </div>
                   </div>
@@ -1098,7 +1104,7 @@ export function OnboardingPage() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between bg-white rounded p-2">
                         <span className="text-xs text-gray-600">Per Year:</span>
-                        <span className="text-sm font-bold" style={{ color: '#AB0FB8' }}>
+                        <span className="text-sm font-bold" style={{ color: '#FFD700' }}>
                           {getHabitStats().yearlyUsage.toLocaleString()} {getHabitStats().label.unit}
                         </span>
                       </div>
@@ -1118,7 +1124,7 @@ export function OnboardingPage() {
                   </div>
 
                   {/* Single Urgency Message */}
-                  <div className="bg-purple-50 border-2 border-purple-400 rounded-lg p-2">
+                  <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-2">
                     <p className="text-xs font-bold text-gray-800">
                       ⚠️ Save ${getHabitStats().yearlySpending.toLocaleString()}/year for just $19.99!
                     </p>
@@ -1129,13 +1135,13 @@ export function OnboardingPage() {
                 <div className="space-y-2">
                   <Button
                     onClick={nextStep}
-                    className="w-full text-white font-bold text-lg"
+                    className="w-full text-white font-bold text-sm sm:text-base md:text-lg px-2 py-4 sm:py-6"
                     style={{
-                      backgroundColor: '#AB0FB8',
+                      backgroundColor: '#FFD700',
                     }}
                     size="lg"
                   >
-                    💰 YES! GIVE ME 75% OFF - $19.99!
+                    <span className="whitespace-nowrap">💰 YES! GIVE ME 75% OFF - $19.99!</span>
                   </Button>
                   <Button
                     onClick={nextStep}
@@ -1151,7 +1157,7 @@ export function OnboardingPage() {
 
             {/* Step 7: Password Creation */}
             {step === 7 && (
-              <div className="space-y-6 py-6">
+              <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
                 {/* Two-column layout for password fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -1197,7 +1203,7 @@ export function OnboardingPage() {
                 <div className="pt-4">
                   <Button
                     onClick={handleSubmit}
-                    className="w-full bg-[#AB0FB8] hover:bg-[#890C94] text-white font-semibold text-lg py-6 rounded-lg transition-all duration-300"
+                    className="w-full bg-[#AB0FB8] hover:bg-[#890C94] text-white font-semibold text-sm sm:text-base md:text-lg py-4 sm:py-6 rounded-lg transition-all duration-300 px-2"
                     size="lg"
                     disabled={
                       formData.password.length < 8 || 
@@ -1205,7 +1211,7 @@ export function OnboardingPage() {
                       !formData.confirmPassword
                     }
                   >
-                    Create Account & Start Journey
+                    <span className="whitespace-nowrap">Create Account & Start Journey</span>
                   </Button>
                 </div>
               </div>
