@@ -13,7 +13,6 @@ const client = postgres(connectionString, {
   max: 10, // Connection pool size
   idle_timeout: 20,
   connect_timeout: 10,
-  onnotice: false, // Suppress PostgreSQL NOTICE messages
 });
 
 // Create drizzle instance
