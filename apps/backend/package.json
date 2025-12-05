@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit push",
+    "db:migrate": "drizzle-kit push --force",
     "db:seed": "tsx src/db/seed.ts",
     "db:studio": "drizzle-kit studio"
   },
