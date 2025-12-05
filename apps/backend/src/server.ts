@@ -51,9 +51,7 @@ await fastify.register(cors, {
     // In production on Railway, allow the production domain
     const productionDomains = [
       'https://smoking-quit-production.up.railway.app',
-      'http://smoking-quit-production.up.railway.app',
-      'https://web-production-782d6.up.railway.app',
-      'http://web-production-782d6.up.railway.app',
+      'http://smoking-quit-production.up.railway.app'
     ];
 
     // List of allowed origins
@@ -83,11 +81,12 @@ await fastify.register(rateLimit, {
 // Register authentication middleware
 fastify.decorate('authenticate', authMiddleware);
 
-// Auth routes
-await fastify.register(authRoutes);
-
-// Stripe webhook routes (must be before body parser plugins)
+// Stripe webhook routes (must be registered early to set up custom JSON parser)
+// This preserves raw body for webhook signature verification
 await fastify.register(stripeWebhookRoutes);
+
+// Auth routes (registered after webhook routes so they use the custom JSON parser)
+await fastify.register(authRoutes);
 
 // tRPC Plugin
 await fastify.register(fastifyTRPCPlugin, {

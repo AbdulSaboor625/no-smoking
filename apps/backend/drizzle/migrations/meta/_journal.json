@@ -43,6 +43,13 @@
       "when": 1763365871659,
       "tag": "0005_tough_leo",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1764921599368,
+      "tag": "0006_wonderful_next_avengers",
+      "breakpoints": true
     }
   ]
 }

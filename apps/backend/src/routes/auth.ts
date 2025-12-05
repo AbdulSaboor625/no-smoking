@@ -26,28 +26,11 @@ const checkEmailSchema = z.object({
   email: z.string().email(),
 });
 
-// Temporary users table (in-memory for now, should be in database)
-interface User {
-  id: string;
-  email: string;
-  passwordHash: string;
-  username?: string;
-  createdAt: Date;
-}
-
-const users: Map<string, User> = new Map();
-
 export async function authRoutes(fastify: FastifyInstance) {
   // Check if email exists
   fastify.post('/auth/check-email', async (request, reply) => {
     try {
       const body = checkEmailSchema.parse(request.body);
-
-      // Check if user exists in memory
-      const existingUser = Array.from(users.values()).find((u) => u.email === body.email);
-      if (existingUser) {
-        return reply.send({ exists: true });
-      }
 
       // Check if email exists in database
       const existingProfile = await db
@@ -71,12 +54,6 @@ export async function authRoutes(fastify: FastifyInstance) {
       console.log('📥 Signup request body:', request.body);
       const body = signupSchema.parse(request.body);
 
-      // Check if user already exists in memory
-      const existingUser = Array.from(users.values()).find((u) => u.email === body.email);
-      if (existingUser) {
-        return reply.code(400).send({ error: 'User already exists' });
-      }
-
       // Check if email already exists in database (emails must be unique)
       const existingProfile = await db
         .select()
@@ -93,41 +70,34 @@ export async function authRoutes(fastify: FastifyInstance) {
       // Hash password
       const passwordHash = await bcrypt.hash(body.password, 10);
 
-      // Create user
-      const user: User = {
-        id: Math.random().toString(36).substring(7),
-        email: body.email,
-        passwordHash,
-        username: body.username,
-        createdAt: new Date(),
-      };
-
-      users.set(user.id, user);
+      // Generate user ID
+      const userId = Math.random().toString(36).substring(7);
 
       // Calculate trial end date (7 days from now)
       const trialStartDate = new Date();
       const trialEndDate = calculateTrialEndDate(trialStartDate);
 
-      // Create profile in database with trial dates
+      // Create profile in database with password hash and trial dates
       await db.insert(profiles).values({
-        id: user.id,
-        email: user.email,
+        id: userId,
+        email: body.email,
         username: body.username,
+        passwordHash: passwordHash,
         subscriptionStatus: 'trialing',
         trialStartDate,
         trialEndDate,
       });
 
       // Generate JWT
-      const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+      const token = jwt.sign({ userId, email: body.email }, JWT_SECRET, {
         expiresIn: JWT_EXPIRES_IN,
       });
 
       return reply.send({
         user: {
-          id: user.id,
-          email: user.email,
-          username: user.username,
+          id: userId,
+          email: body.email,
+          username: body.username,
         },
         token,
       });
@@ -144,28 +114,40 @@ export async function authRoutes(fastify: FastifyInstance) {
     try {
       const body = loginSchema.parse(request.body);
 
-      // Find user
-      const user = Array.from(users.values()).find((u) => u.email === body.email);
-      if (!user) {
+      // Find user in database
+      const userProfiles = await db
+        .select()
+        .from(profiles)
+        .where(eq(profiles.email, body.email))
+        .limit(1);
+
+      if (userProfiles.length === 0) {
+        return reply.code(401).send({ error: 'Invalid credentials' });
+      }
+
+      const profile = userProfiles[0];
+
+      // Check if password hash exists
+      if (!profile.passwordHash) {
         return reply.code(401).send({ error: 'Invalid credentials' });
       }
 
       // Verify password
-      const validPassword = await bcrypt.compare(body.password, user.passwordHash);
+      const validPassword = await bcrypt.compare(body.password, profile.passwordHash);
       if (!validPassword) {
         return reply.code(401).send({ error: 'Invalid credentials' });
       }
 
       // Generate JWT
-      const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+      const token = jwt.sign({ userId: profile.id, email: profile.email }, JWT_SECRET, {
         expiresIn: JWT_EXPIRES_IN,
       });
 
       return reply.send({
         user: {
-          id: user.id,
-          email: user.email,
-          username: user.username,
+          id: profile.id,
+          email: profile.email,
+          username: profile.username,
         },
         token,
       });
@@ -180,16 +162,24 @@ export async function authRoutes(fastify: FastifyInstance) {
   // Get current user (protected route)
   fastify.get('/auth/me', { preHandler: [fastify.authenticate] }, async (request, reply) => {
     const userId = (request as any).user.userId;
-    const user = users.get(userId);
 
-    if (!user) {
+    // Get user from database
+    const userProfiles = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, userId))
+      .limit(1);
+
+    if (userProfiles.length === 0) {
       return reply.code(404).send({ error: 'User not found' });
     }
 
+    const profile = userProfiles[0];
+
     return reply.send({
-      id: user.id,
-      email: user.email,
-      username: user.username,
+      id: profile.id,
+      email: profile.email,
+      username: profile.username,
     });
   });
 

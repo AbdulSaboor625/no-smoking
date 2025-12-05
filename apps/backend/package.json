@@ -9,8 +9,8 @@
     "start": "node dist/server.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
-    "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "drizzle-kit push:pg",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
     "db:studio": "drizzle-kit studio"
   },

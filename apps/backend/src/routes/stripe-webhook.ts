@@ -1,4 +1,4 @@
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest } from 'fastify';
 import Stripe from 'stripe';
 import { stripe } from '../lib/stripe.js';
 import { db } from '../db/db.js';
@@ -8,35 +8,39 @@ import { eq } from 'drizzle-orm';
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 export async function stripeWebhookRoutes(fastify: FastifyInstance) {
+  // Add content type parser for webhooks - ONLY affects this plugin's routes
+  fastify.removeContentTypeParser('application/json');
+  fastify.addContentTypeParser('application/json', { parseAs: 'buffer' }, async (_request: FastifyRequest, body: Buffer) => {
+    // Return buffer for signature verification, but also parse for easier handling
+    return body;
+  });
+
   // Stripe webhook endpoint
-  fastify.post(
-    '/webhooks/stripe',
-    {
-      config: {
-        // We need the raw body for webhook signature verification
-        rawBody: true,
-      },
-    },
-    async (request, reply) => {
-      const signature = request.headers['stripe-signature'];
+  fastify.post('/webhooks/stripe', async (request, reply) => {
+    const signature = request.headers['stripe-signature'];
+    
+    if (!signature) {
+      return reply.code(400).send({ error: 'No signature provided' });
+    }
 
-      if (!signature) {
-        return reply.code(400).send({ error: 'No signature provided' });
-      }
+    // Get the raw body as Buffer (set by our content type parser above)
+    const rawBody = request.body as Buffer;
 
-      let event: Stripe.Event;
+    let event: Stripe.Event;
 
-      try {
-        // Verify webhook signature
-        event = stripe.webhooks.constructEvent(
-          (request as any).rawBody || request.body,
-          signature,
-          WEBHOOK_SECRET
-        );
-      } catch (err) {
-        fastify.log.error({ err }, 'Webhook signature verification failed');
-        return reply.code(400).send({ error: 'Webhook signature verification failed' });
-      }
+    try {
+      // Verify webhook signature using the raw body Buffer
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        WEBHOOK_SECRET
+      );
+      
+      fastify.log.info({ eventType: event.type }, '✅ Webhook signature verified');
+    } catch (err) {
+      fastify.log.error({ err }, '❌ Webhook signature verification failed');
+      return reply.code(400).send({ error: 'Webhook signature verification failed' });
+    }
 
       // Handle the event
       try {

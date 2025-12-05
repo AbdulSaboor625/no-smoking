@@ -8,6 +8,7 @@ export const profiles = pgTable('profiles', {
   id: varchar('id', { length: 255 }).primaryKey(), // Clerk user ID
   email: varchar('email', { length: 255 }).unique().notNull(),
   username: varchar('username', { length: 100 }), // Usernames can be duplicate
+  passwordHash: varchar('password_hash', { length: 255 }), // Hashed password for authentication
   avatarUrl: text('avatar_url'),
 
   // Subscription fields
