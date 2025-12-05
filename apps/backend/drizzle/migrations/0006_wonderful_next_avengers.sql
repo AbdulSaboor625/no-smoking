@@ -1,1 +1,0 @@
-ALTER TABLE "profiles" ADD COLUMN "password_hash" varchar(255);
