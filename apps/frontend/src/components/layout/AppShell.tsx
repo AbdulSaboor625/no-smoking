@@ -31,15 +31,16 @@ export function AppShell({ children, title }: AppShellProps) {
     : 0;
 
   const isTrialing = subscriptionStatus?.status === 'trialing';
+  const isPaid = subscriptionStatus?.status === 'active';
   const hasAccess = accessCheck?.hasAccess ?? true; // Default to true while loading
 
-  // Show modal on first login if user is in trial
+  // Show modal on first login if user is in trial (but not if already paid)
   useEffect(() => {
     // Check if modal has already been shown in this session
     const modalShownKey = 'subscription_modal_shown';
     const hasShownModal = sessionStorage.getItem(modalShownKey);
 
-    if (!hasShownModal && isTrialing && daysRemaining > 0) {
+    if (!hasShownModal && isTrialing && daysRemaining > 0 && !isPaid) {
       // Show modal after 2 seconds on first load
       const timer = setTimeout(() => {
         setShowSubscriptionModal(true);
@@ -50,7 +51,18 @@ export function AppShell({ children, title }: AppShellProps) {
       return () => clearTimeout(timer);
     }
     return undefined;
-  }, [isTrialing, daysRemaining]);
+  }, [isTrialing, daysRemaining, isPaid]);
+
+  // Handle payment success notification
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('payment') === 'success' && isPaid) {
+      // Clear URL params after successful payment
+      window.history.replaceState({}, '', window.location.pathname);
+      // Optionally show success toast (can be enhanced with toast library)
+      console.log('✅ Payment successful! Subscription activated.');
+    }
+  }, [isPaid]);
 
   // If loading, show loading state
   if (isLoading) {
@@ -74,8 +86,8 @@ export function AppShell({ children, title }: AppShellProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      {/* Trial Banner */}
-      {isTrialing && daysRemaining >= 0 && (
+      {/* Trial Banner - Only show for trial users, not paid users */}
+      {isTrialing && daysRemaining >= 0 && !isPaid && (
         <div className="fixed top-0 left-0 right-0 z-30">
           <TrialBanner
             daysRemaining={daysRemaining}
@@ -85,7 +97,7 @@ export function AppShell({ children, title }: AppShellProps) {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex md:w-64 md:flex-col ${isTrialing ? 'pt-14' : ''}`}>
+      <aside className={`hidden md:flex md:w-64 md:flex-col ${isTrialing && !isPaid ? 'pt-14' : ''}`}>
         <Sidebar />
       </aside>
 
@@ -96,14 +108,14 @@ export function AppShell({ children, title }: AppShellProps) {
             className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
-          <aside className={`fixed inset-y-0 left-0 w-64 z-50 md:hidden ${isTrialing ? 'pt-14' : ''}`}>
+          <aside className={`fixed inset-y-0 left-0 w-64 z-50 md:hidden ${isTrialing && !isPaid ? 'pt-14' : ''}`}>
             <Sidebar isMobile onClose={() => setIsSidebarOpen(false)} />
           </aside>
         </>
       )}
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col overflow-hidden ${isTrialing ? 'pt-14' : ''}`}>
+      <div className={`flex-1 flex flex-col overflow-hidden ${isTrialing && !isPaid ? 'pt-14' : ''}`}>
         <Header onMenuClick={() => setIsSidebarOpen(true)} title={title} />
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>

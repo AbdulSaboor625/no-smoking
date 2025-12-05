@@ -14,7 +14,7 @@ import { createContext } from './trpc/context.js';
 import { authRoutes } from './routes/auth.js';
 import { authMiddleware } from './middleware/auth.js';
 import { stripeWebhookRoutes } from './routes/stripe-webhook.js';
-import { runMigrationsOnStart } from './db/run-migrations-on-start.js';
+import { runMigrationsOnStart } from './db/run-migration-on-start.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -181,7 +181,7 @@ if (frontendDistPath) {
 const start = async () => {
   try {
     // Run migrations before starting server (non-blocking)
-    await runMigrationsOnStart().catch((err) => {
+    await runMigrationsOnStart().catch((err: any) => {
       console.warn('Migration check failed, but continuing:', err);
     });
 
