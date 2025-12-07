@@ -286,30 +286,47 @@ export function OnboardingPage() {
 
   // Calculate user's habit statistics
   const getHabitStats = () => {
-    const dailyNum = parseFloat(formData.weeklyUsage) || 0;
-    const monthlyNum = parseFloat(formData.monthlySpending) || 0;
-    // Convert duration string to numeric value for calculations
-    let durationNum = 0;
+    const dailyNum = parseFloat(formData.weeklyUsage) || 0; // packs/units per day
+    const costPerUnit = parseFloat(formData.monthlySpending) || 0; // cost per pack/unit
+    
+    // Calculate daily cost: packs per day × cost per pack
+    const dailyCost = dailyNum * costPerUnit;
+    
+    // Calculate yearly spending: daily cost × 365 days
+    const yearlySpending = Math.round(dailyCost * 365);
+    
+    // Calculate yearly usage
+    const yearlyUsage = Math.round(dailyNum * 365);
+    
+    // Get duration range (min and max years) for range calculation
+    let minYears = 0;
+    let maxYears = 0;
     if (formData.duration === 'less_than_5') {
-      durationNum = 2.5; // Average of 0-5 years
+      minYears = 0;
+      maxYears = 5;
     } else if (formData.duration === '5_to_10') {
-      durationNum = 7.5; // Average of 5-10 years
+      minYears = 5;
+      maxYears = 10;
     } else if (formData.duration === '10_to_20') {
-      durationNum = 15; // Average of 10-20 years
+      minYears = 10;
+      maxYears = 20;
     } else if (formData.duration === 'over_20') {
-      durationNum = 25; // Representative value for 20+ years
+      minYears = 20;
+      maxYears = 35; // Reasonable upper bound for "over 20"
     } else if (formData.duration === 'less_than_10') {
       // Legacy support
-      durationNum = 5;
+      minYears = 0;
+      maxYears = 10;
     } else {
       // Fallback for old numeric values
-      durationNum = parseFloat(formData.duration) || 0;
+      const durationNum = parseFloat(formData.duration) || 0;
+      minYears = durationNum;
+      maxYears = durationNum;
     }
-
-    // weeklyUsage now stores daily usage for all product types
-    const yearlyUsage = Math.round(dailyNum * 365); // daily * days in year
-    const yearlySpending = Math.round(monthlyNum * 12);
-    const totalSpent = Math.round(monthlyNum * 12 * durationNum);
+    
+    // Calculate total spent range
+    const totalSpentMin = Math.round(yearlySpending * minYears);
+    const totalSpentMax = Math.round(yearlySpending * maxYears);
 
     const productLabels = {
       cigarettes: { singular: 'cigarette', plural: 'cigarettes', unit: 'cigarettes' },
@@ -325,7 +342,8 @@ export function OnboardingPage() {
     return {
       yearlyUsage,
       yearlySpending,
-      totalSpent,
+      totalSpentMin,
+      totalSpentMax,
       label,
     };
   };
@@ -988,7 +1006,10 @@ export function OnboardingPage() {
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-bold text-gray-800">Total Spent So Far:</span>
                             <span className="text-xl font-extrabold text-red-700">
-                              ${getHabitStats().totalSpent.toLocaleString()}
+                              {getHabitStats().totalSpentMin === getHabitStats().totalSpentMax
+                                ? `$${getHabitStats().totalSpentMin.toLocaleString()}`
+                                : `$${getHabitStats().totalSpentMin.toLocaleString()} - $${getHabitStats().totalSpentMax.toLocaleString()}`
+                              }
                             </span>
                           </div>
                         </div>
@@ -1117,7 +1138,10 @@ export function OnboardingPage() {
                       <div className="flex items-center justify-between bg-red-100 rounded p-2 border border-red-300">
                         <span className="text-xs font-bold text-gray-800">Total Wasted:</span>
                         <span className="text-base font-extrabold text-red-700">
-                          ${getHabitStats().totalSpent.toLocaleString()}
+                          {getHabitStats().totalSpentMin === getHabitStats().totalSpentMax
+                            ? `$${getHabitStats().totalSpentMin.toLocaleString()}`
+                            : `$${getHabitStats().totalSpentMin.toLocaleString()} - $${getHabitStats().totalSpentMax.toLocaleString()}`
+                          }
                         </span>
                       </div>
                     </div>
