@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -298,35 +298,26 @@ export function OnboardingPage() {
     // Calculate yearly usage
     const yearlyUsage = Math.round(dailyNum * 365);
     
-    // Get duration range (min and max years) for range calculation
-    let minYears = 0;
+    // Get maximum years in the duration range for calculation
     let maxYears = 0;
     if (formData.duration === 'less_than_5') {
-      minYears = 0;
       maxYears = 5;
     } else if (formData.duration === '5_to_10') {
-      minYears = 5;
       maxYears = 10;
     } else if (formData.duration === '10_to_20') {
-      minYears = 10;
       maxYears = 20;
     } else if (formData.duration === 'over_20') {
-      minYears = 20;
       maxYears = 35; // Reasonable upper bound for "over 20"
     } else if (formData.duration === 'less_than_10') {
       // Legacy support
-      minYears = 0;
       maxYears = 10;
     } else {
       // Fallback for old numeric values
-      const durationNum = parseFloat(formData.duration) || 0;
-      minYears = durationNum;
-      maxYears = durationNum;
+      maxYears = parseFloat(formData.duration) || 0;
     }
     
-    // Calculate total spent range
-    const totalSpentMin = Math.round(yearlySpending * minYears);
-    const totalSpentMax = Math.round(yearlySpending * maxYears);
+    // Calculate total spent using maximum years in the range
+    const totalSpent = Math.round(yearlySpending * maxYears);
 
     const productLabels = {
       cigarettes: { singular: 'cigarette', plural: 'cigarettes', unit: 'cigarettes' },
@@ -342,8 +333,7 @@ export function OnboardingPage() {
     return {
       yearlyUsage,
       yearlySpending,
-      totalSpentMin,
-      totalSpentMax,
+      totalSpent,
       label,
     };
   };
@@ -425,8 +415,8 @@ export function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-2 sm:p-4">
-      <Card className="max-w-2xl w-full shadow-2xl border-0" style={{ backgroundColor: '#6B2C91' }}>
+    <div className={`min-h-screen bg-white overflow-x-hidden ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-center justify-center p-2 sm:p-4'}`}>
+      <Card className={`${step === 6 ? 'w-full h-screen overflow-y-auto' : 'max-w-2xl w-full'} shadow-2xl border-0`} style={{ backgroundColor: '#6B2C91' }}>
         <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
           <div className="mb-3 sm:mb-4">
             <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/20">
@@ -968,7 +958,7 @@ export function OnboardingPage() {
                       {formatTime(timeLeft)}
                     </span>
                   </div>
-                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 rounded-lg p-6 sm:p-8 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
+                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 p-6 sm:p-8 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
                     {/* Urgency badge */}
                     <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
                       ONE TIME OFFER
@@ -983,7 +973,7 @@ export function OnboardingPage() {
                   </div>
 
                   {/* Personalized Impact Calculations */}
-                  <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 rounded-lg p-4 my-4">
+                  <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 p-4 my-4">
                     <p className="text-sm font-bold text-gray-800 mb-3">
                       💡 {formData.productType === 'cigarettes' ? 'REAL COST OF SMOKING' :
                          formData.productType === 'vape_disposable' ? 'REAL COST OF VAPING' :
@@ -994,7 +984,7 @@ export function OnboardingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {/* Left column: Cost info */}
                       <div className="space-y-3">
-                        <div className="bg-white rounded-lg p-3 shadow-sm">
+                        <div className="bg-white p-3 shadow-sm">
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-600">Yearly Spending:</span>
                             <span className="text-lg font-extrabold text-red-600">
@@ -1002,18 +992,15 @@ export function OnboardingPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-red-300">
+                        <div className="bg-white p-3 shadow-sm border-2 border-red-300">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-bold text-gray-800">Total Spent So Far:</span>
                             <span className="text-xl font-extrabold text-red-700">
-                              {getHabitStats().totalSpentMin === getHabitStats().totalSpentMax
-                                ? `$${getHabitStats().totalSpentMin.toLocaleString()}`
-                                : `$${getHabitStats().totalSpentMin.toLocaleString()} - $${getHabitStats().totalSpentMax.toLocaleString()}`
-                              }
+                              ${getHabitStats().totalSpent.toLocaleString()}
                             </span>
                           </div>
                         </div>
-                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-3 shadow-sm border-2 border-yellow-300">
+                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-3 shadow-sm border-2 border-yellow-300">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-bold text-gray-800">Your Life</span>
                             <span className="text-xl font-extrabold" style={{ color: '#FFD700' }}>
@@ -1023,7 +1010,7 @@ export function OnboardingPage() {
                         </div>
                       </div>
                       {/* Right column: Health risks */}
-                      <div className="bg-white rounded-lg p-3 shadow-sm">
+                      <div className="bg-white p-3 shadow-sm">
                         <p className="text-xs font-bold text-red-600 mb-2">Health Risks:</p>
                         <ul className="text-xs text-gray-700 space-y-1">
                           <li>• Heart Attack</li>
@@ -1075,7 +1062,7 @@ export function OnboardingPage() {
               <div className="space-y-3 sm:space-y-4 py-4 sm:py-6">
                 <div className="text-center space-y-2 sm:space-y-3">
                   {/* Emergency Header with Timer */}
-                  <div className="p-3 sm:p-4 rounded-lg" style={{ backgroundColor: '#FFD700' }}>
+                  <div className="p-3 sm:p-4" style={{ backgroundColor: '#FFD700' }}>
                     <h3 className="text-base sm:text-lg md:text-xl font-bold text-white px-1">⚠️ WAIT! EXCLUSIVE FLASH SALE ⚠️</h3>
                     <div className="mt-2 flex items-center justify-center gap-2">
                       <span className="text-sm font-bold text-white/90">⏰ Expires in:</span>
@@ -1086,7 +1073,7 @@ export function OnboardingPage() {
                   </div>
 
                   {/* Price Comparison + Seats in One Block */}
-                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 rounded-lg p-4 sm:p-6 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
+                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 p-4 sm:p-6 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
                     {/* Flash Sale Badge */}
                     <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
                       75% OFF!
@@ -1120,7 +1107,7 @@ export function OnboardingPage() {
                   </div>
 
                   {/* Personalized ROI - Compact */}
-                  <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 rounded-lg p-3">
+                  <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 p-3">
                     <p className="text-xs font-bold text-gray-800 mb-2">💰 What You're Really Spending:</p>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between bg-white rounded p-2">
@@ -1138,17 +1125,14 @@ export function OnboardingPage() {
                       <div className="flex items-center justify-between bg-red-100 rounded p-2 border border-red-300">
                         <span className="text-xs font-bold text-gray-800">Total Wasted:</span>
                         <span className="text-base font-extrabold text-red-700">
-                          {getHabitStats().totalSpentMin === getHabitStats().totalSpentMax
-                            ? `$${getHabitStats().totalSpentMin.toLocaleString()}`
-                            : `$${getHabitStats().totalSpentMin.toLocaleString()} - $${getHabitStats().totalSpentMax.toLocaleString()}`
-                          }
+                          ${getHabitStats().totalSpent.toLocaleString()}
                         </span>
                       </div>
                     </div>
                   </div>
 
                   {/* Single Urgency Message */}
-                  <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-2">
+                  <div className="bg-yellow-50 border-2 border-yellow-400 p-2">
                     <p className="text-xs font-bold text-gray-800">
                       ⚠️ Save ${getHabitStats().yearlySpending.toLocaleString()}/year for just $19.99!
                     </p>
@@ -1247,11 +1231,29 @@ export function OnboardingPage() {
                 <Button variant="outline" onClick={prevStep} className="text-black">
                   Back
                 </Button>
+                <div className="flex items-center gap-2">
+                  <span>Already have an account?</span>
+                  <Link to="/login" className="text-[#FFC107] hover:text-[#c49005] font-bold">Login</Link>
+                </div>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
+      {/* Right side: Video (only for step 6) */}
+      {step === 6 && (
+        <div className="w-full h-screen bg-black flex items-center justify-center overflow-hidden">
+          <div className="w-full h-full overflow-hidden relative">
+            <iframe
+              className="absolute inset-0 w-full h-full border-0"
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="Video placeholder"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
