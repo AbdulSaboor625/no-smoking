@@ -11,7 +11,7 @@ interface AppShellProps {
   title?: string;
 }
 
-export function AppShell({ children, title }: AppShellProps) {
+export function AppShell({ children }: AppShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
