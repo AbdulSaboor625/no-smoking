@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
-import { Header } from './Header';
 import { TrialBanner } from '../TrialBanner';
 import { SubscriptionModal } from '../SubscriptionModal';
 import { PaymentWall } from '../PaymentWall';
 import { trpc } from '../../lib/trpc';
+import DashboardHeader from './dashboard-header';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -85,7 +85,7 @@ export function AppShell({ children, title }: AppShellProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-[#F2F2F2]">
       {/* Trial Banner - Only show for trial users, not paid users */}
       {isTrialing && daysRemaining >= 0 && !isPaid && (
         <div className="fixed top-0 left-0 right-0 z-30">
@@ -96,27 +96,27 @@ export function AppShell({ children, title }: AppShellProps) {
         </div>
       )}
 
-      {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex md:w-64 md:flex-col ${isTrialing && !isPaid ? 'pt-14' : ''}`}>
+      {/* Desktop Sidebar - Always visible on xl and above */}
+      <aside className={`hidden xl:flex w-64 flex-col ${isTrialing && !isPaid ? '' : ''}`}>
         <Sidebar />
       </aside>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Sidebar Overlay - Shows when isSidebarOpen is true on all screens below xl */}
       {isSidebarOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 xl:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
-          <aside className={`fixed inset-y-0 left-0 w-64 z-50 md:hidden ${isTrialing && !isPaid ? 'pt-14' : ''}`}>
+          <aside className={`fixed inset-y-0 left-0 w-64 z-50 xl:hidden ${isTrialing && !isPaid ? '' : ''}`}>
             <Sidebar isMobile onClose={() => setIsSidebarOpen(false)} />
           </aside>
         </>
       )}
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col overflow-hidden ${isTrialing && !isPaid ? 'pt-14' : ''}`}>
-        <Header onMenuClick={() => setIsSidebarOpen(true)} title={title} />
+      <div className={`flex-1 flex flex-col overflow-hidden ${isTrialing && !isPaid ? '' : ''}`}>
+        <DashboardHeader onMenuClick={() => setIsSidebarOpen(true)} />
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 

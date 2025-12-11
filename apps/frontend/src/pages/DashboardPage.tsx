@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { trpc } from '@/lib/trpc';
 import { differenceInHours, differenceInDays } from 'date-fns';
-import { TrendingUp, AlertTriangle, Heart, DollarSign, Clock, Award, Plus, Flame, LifeBuoy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MorningCommitmentModal } from '@/components/MorningCommitmentModal';
 import { EveningReflectionModal } from '@/components/EveningReflectionModal';
@@ -13,6 +12,8 @@ import { DailyCoachingCard } from '@/components/DailyCoachingCard';
 import { AnimatedCard, AnimatedList, AnimatedListItem, FadeIn } from '@/components/ui/animated-container';
 import { DashboardSkeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
+import StatisticsCard from '@/components/statistics-card';
+import StepsBlock from '@/components/steps-block';
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -104,136 +105,163 @@ export function DashboardPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="p-6 space-y-6"
+        className="xl:pb-10 xl:px-10 pb-5 px-5 space-y-6"
       >
-        {/* Hero Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <AnimatedCard delay={0.1}>
-            <Card className="border-0 shadow-md hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Time Smoke-Free</CardTitle>
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                >
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <motion.div
-                  key={hoursSinceQuit}
-                  initial={{ scale: 1.2, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-2xl font-bold"
-                >
-                  {hoursSinceQuit < 24
-                    ? `${hoursSinceQuit}h`
-                    : `${daysSinceQuit} day${daysSinceQuit !== 1 ? 's' : ''}`}
-                </motion.div>
-                <p className="text-xs text-muted-foreground">
-                  Since {new Date(quitAttempt.quitDate).toLocaleDateString()}
-                </p>
-              </CardContent>
-            </Card>
-          </AnimatedCard>
 
-          <AnimatedCard delay={0.2}>
-            <Card className="border-0 shadow-md hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Products Not Used</CardTitle>
-                <TrendingUp className="h-4 w-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <motion.div
-                  key={productsSaved}
-                  initial={{ scale: 1.2, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-2xl font-bold text-green-600"
-                >
-                  {productsSaved}
-                </motion.div>
-                <p className="text-xs text-muted-foreground">
-                  {quitAttempt.productType.replace('_', ' ')}
-                </p>
-              </CardContent>
-            </Card>
-          </AnimatedCard>
+        <div className='flex items-start justify-between lg:gap-8 gap-4 flex-col lg:flex-row overflow-hidden'>
+          <div className='lg:w-[70%] w-full'>
+            {/* Hero Stats */}
+            <div className='bg-[#561F7A] rounded-[20px] p-4'> 
+              <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
+                <AnimatedCard delay={0.1}>
+                  <Card className="border-0 shadow-none hover:shadow-sm transition-shadow duration-300 bg-[#ffffff13] p-3 rounded-[10px]">
+                    <div className='flex items-center justify-between'>
+                      <div className='flex flex-col justify-between h-[136px] gap-2'>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 !p-0">
+                          <CardTitle className="text-xs font-medium">Time Smoke-Free</CardTitle>
+                        </CardHeader>
+                        <CardContent className='!p-0'>
+                          <motion.div
+                            key={hoursSinceQuit}
+                            initial={{ scale: 1.2, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="md:text-[24px] text-[20px] font-medium"
+                          >
+                            {hoursSinceQuit < 24
+                              ? `${hoursSinceQuit} Hour`
+                              : `${daysSinceQuit} day${daysSinceQuit !== 1 ? 's' : ''}`}
+                          </motion.div>
+                          <p className="text-xs font-medium text-[#ffffff]">
+                            Since {new Date(quitAttempt.quitDate).toLocaleDateString()}
+                          </p>
+                        </CardContent>
+                      </div>
+                      <div className='w-[150px] h-[136px]'>
+                        <img src="/assets/images/card-img1.png" alt="Time Smoke-Free" className='w-full h-full object-contain' />
+                      </div>
+                    </div>
+                  </Card>
+                </AnimatedCard>
 
-          {moneySaved && (
-            <AnimatedCard delay={0.3}>
-              <Card className="border-0 shadow-md hover:shadow-xl transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Money Saved</CardTitle>
-                  <DollarSign className="h-4 w-4 text-emerald-600" />
-                </CardHeader>
-                <CardContent>
-                  <motion.div
-                    key={moneySaved}
-                    initial={{ scale: 1.2, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="text-2xl font-bold text-emerald-600"
-                  >
-                    ${moneySaved}
-                  </motion.div>
-                  <p className="text-xs text-muted-foreground">Keep it up!</p>
-                </CardContent>
-              </Card>
-            </AnimatedCard>
-          )}
+                <AnimatedCard delay={0.2}>
+                  <Card className="border-0 shadow-none hover:shadow-sm transition-shadow duration-300 bg-[#ffffff13] p-3 rounded-[10px]">
+                    <div className='flex items-center justify-between'>
+                      <div className='flex flex-col justify-between h-[136px] gap-2'>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 !p-0">
+                          <CardTitle className="text-xs font-medium">Products Not Used</CardTitle>
+                        </CardHeader>
+                        <CardContent className='!p-0'>
+                          <motion.div
+                            key={productsSaved}
+                            initial={{ scale: 1.2, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="md:text-[24px] text-[20px] font-medium"
+                          >
+                            {productsSaved}
+                          </motion.div>
+                          <p className="text-xs font-medium text-[#ffffff]">
+                            {quitAttempt.productType.replace('_', ' ')}
+                          </p>
+                        </CardContent>
+                      </div>
+                      <div className='w-[150px] h-[136px]'>
+                        <img src="/assets/images/card-img2.png" alt="Products Not Used" className='w-full h-full object-contain' />
+                      </div>
+                    </div>
+                  </Card>
+                </AnimatedCard>
 
-          <AnimatedCard delay={0.4}>
-            <Card className="border-0 shadow-md hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Milestones</CardTitle>
-                <Award className="h-4 w-4 text-purple-600" />
-              </CardHeader>
-              <CardContent>
-                <motion.div
-                  key={milestones?.length}
-                  initial={{ scale: 1.2, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-2xl font-bold text-purple-600"
-                >
-                  {milestones?.length || 0}
-                </motion.div>
-                <p className="text-xs text-muted-foreground">Achievements unlocked</p>
-              </CardContent>
-            </Card>
-          </AnimatedCard>
+                {moneySaved && (
+                  <AnimatedCard delay={0.3}>
+                    <Card className="border-0 shadow-none hover:shadow-sm transition-shadow duration-300 bg-[#ffffff13] p-3 rounded-[10px]">
+                      <div className='flex items-center justify-between'>
+                        <div className='flex flex-col justify-between h-[136px] gap-2'>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 !p-0">
+                            <CardTitle className="text-xs font-medium">Money Saved</CardTitle>
+                          </CardHeader>
+                          <CardContent className='!p-0'>
+                            <motion.div
+                              key={moneySaved}
+                              initial={{ scale: 1.2, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              className="md:text-[24px] text-[20px] font-medium"
+                            >
+                              ${moneySaved}
+                            </motion.div>
+                            <p className="text-xs font-medium text-[#ffffff]">Keep it up!</p>
+                          </CardContent>
+                        </div>
+                        <div className='w-[150px] h-[136px]'>
+                          <img src="/assets/images/card-img3.png" alt="Money Saved" className='w-full h-full object-contain' />
+                        </div>
+                      </div>
+                    </Card>
+                  </AnimatedCard>
+                )}
 
-          <AnimatedCard delay={0.5}>
-            <Card className="border-0 shadow-md hover:shadow-xl transition-shadow duration-300 bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Commitment Streak</CardTitle>
-                <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 5, -5, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 1,
-                  }}
-                >
-                  <Flame className="h-4 w-4 text-orange-600" />
-                </motion.div>
-              </CardHeader>
-              <CardContent>
-                <motion.div
-                  key={streakData?.currentStreak}
-                  initial={{ scale: 1.2, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-2xl font-bold text-orange-600"
-                >
-                  {streakData?.currentStreak || 0} day{streakData?.currentStreak !== 1 ? 's' : ''}
-                </motion.div>
-                <p className="text-xs text-orange-700">
-                  {todayCommitment?.morningCommitted ? '✓ Committed today' : 'Not committed yet'}
-                </p>
-              </CardContent>
-            </Card>
-          </AnimatedCard>
+                <AnimatedCard delay={0.4}>
+                  <Card className="border-0 shadow-none hover:shadow-sm transition-shadow duration-300 bg-[#ffffff13] p-3 rounded-[10px]">
+                    <div className='flex items-center justify-between'>
+                      <div className='flex flex-col justify-between h-[136px] gap-2'>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 !p-0">
+                          <CardTitle className="text-xs font-medium">Milestones</CardTitle>
+                        </CardHeader>
+                        <CardContent className='!p-0'>
+                          <motion.div
+                            key={milestones?.length}
+                            initial={{ scale: 1.2, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="md:text-[24px] text-[20px] font-medium"
+                          >
+                            {milestones?.length || 0}
+                          </motion.div>
+                          <p className="text-xs font-medium text-[#ffffff]">Achievements unlocked</p>
+                        </CardContent>
+                      </div>
+                      <div className='w-[150px] h-[136px]'>
+                        <img src="/assets/images/card-img4.png" alt="Milestones" className='w-full h-full object-contain' />
+                      </div>
+                    </div>
+                  </Card>
+                </AnimatedCard>
+
+                <AnimatedCard delay={0.5}>
+                  <Card className="border-0 shadow-none hover:shadow-sm transition-shadow duration-300 bg-[#ffffff13] p-3 rounded-[10px]">
+                    <div className='flex items-center justify-between'>
+                      <div className='flex flex-col justify-between h-[136px] gap-2'>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 !p-0">
+                          <CardTitle className="text-xs font-medium">Commitment Streak</CardTitle>
+                        </CardHeader>
+                        <CardContent className='!p-0'>
+                          <motion.div
+                            key={streakData?.currentStreak}
+                            initial={{ scale: 1.2, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="md:text-[24px] text-[20px] font-medium"
+                          >
+                            {streakData?.currentStreak || 0} day{streakData?.currentStreak !== 1 ? 's' : ''}
+                          </motion.div>
+                          <p className="text-xs font-medium text-[#ffffff]">
+                            {todayCommitment?.morningCommitted ? '✓ Committed today' : 'Not committed yet'}
+                          </p>
+                        </CardContent>
+                      </div>
+                      <div className='w-[150px] h-[136px]'>
+                        <img src="/assets/images/card-img5.png" alt="Commitment Streak" className='w-full h-full object-contain' />
+                      </div>
+                    </div>
+                  </Card>
+                </AnimatedCard>
+              </div>
+            </div>
+
+            <StepsBlock />
+          </div>
+
+        <div className='lg:w-[30%] w-full' >
+          <StatisticsCard />
+        </div>
+
         </div>
 
         {/* Daily Coaching Message */}
@@ -244,7 +272,7 @@ export function DashboardPage() {
         )}
 
         {/* Quick Actions */}
-        <FadeIn delay={0.7}>
+        {/* <FadeIn delay={0.7}>
           <Card className="border-0 shadow-md">
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
@@ -311,10 +339,10 @@ export function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-        </FadeIn>
+        </FadeIn> */}
 
         {/* Motivational Section */}
-        <FadeIn delay={0.8}>
+        {/* <FadeIn delay={0.8}>
           <Card className="bg-gradient-to-r from-brand-purple-100 to-brand-yellow-100 border-none shadow-md">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -355,7 +383,7 @@ export function DashboardPage() {
               </AnimatedList>
             </CardContent>
           </Card>
-        </FadeIn>
+        </FadeIn> */}
 
         {/* Recent Activity */}
         {recentTriggers && recentTriggers.length > 0 && (
