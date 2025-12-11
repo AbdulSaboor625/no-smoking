@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -415,845 +415,1066 @@ export function OnboardingPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-white overflow-x-hidden ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-center justify-center p-2 sm:p-4'}`}>
-      <Card className={`${step === 6 ? 'w-full h-screen overflow-y-auto' : 'max-w-2xl w-full'} shadow-2xl border-0`} style={{ backgroundColor: '#6B2C91' }}>
-        <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
-          <div className="mb-3 sm:mb-4">
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/20">
-              <div 
-                className="h-full bg-[#FFC107] transition-all duration-500 ease-out rounded-full"
-                style={{ width: `${progressPercent}%` }}
-              />
+    <>
+      {/* Custom scrollbar styles for step 6 */}
+      {step === 6 && (
+        <style>{`
+          .overflow-y-auto::-webkit-scrollbar {
+            width: 10px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-track {
+            background: rgba(107, 44, 145, 0.2);
+            border-radius: 10px;
+          }
+          .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #F9C015;
+            border-radius: 10px;
+            border: 2px solid rgba(107, 44, 145, 0.1);
+          }
+          .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: #FFC107;
+          }
+        `}</style>
+      )}
+      <div className={`min-h-screen bg-white overflow-x-hidden ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-center justify-center p-2 sm:p-4'}`}>
+      <Card 
+        className={`${step === 6 ? 'w-full h-screen overflow-y-auto' : 'max-w-2xl w-full'} shadow-2xl border-0 rounded-none`} 
+        style={{ 
+          backgroundColor: '#6B2C91', 
+          backgroundImage: 'url(/assets/images/bg-pattern.png)', 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center', 
+          backgroundRepeat: 'no-repeat',
+          ...(step === 6 && {
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#F9C015 rgba(107, 44, 145, 0.2)',
+          })
+        }}
+      >
+        <div className='max-w-[633px] mx-auto'>
+          <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
+            <div className="mb-3 sm:mb-4">
+              <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/20">
+                <div 
+                  className="h-full bg-[#FFC107] transition-all duration-500 ease-out rounded-full"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <p className="text-xs text-white/80 mt-2 text-center font-medium">
+                Step {step} of 7
+              </p>
             </div>
-            <p className="text-xs text-white/80 mt-2 text-center font-medium">
-              Step {step} of 7
-            </p>
-          </div>
-          {step !== 6 && (
-            <CardTitle className="text-xl sm:text-2xl md:text-3xl text-center font-bold text-white mb-2 px-2">
-              {getStepTitle()}
-            </CardTitle>
-          )}
-          {step !== 6 && getStepDescription() && (
-            <CardDescription className="text-center text-white/90 text-sm sm:text-base px-2">
-              {getStepDescription()}
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent className={`${step === 1 ? "pb-4 sm:pb-8" : ""} px-3 sm:px-6`}>
-          <div className="space-y-6">
-            {/* Step 1: Product Type - Interactive Cards */}
-            {step === 1 && (
-              <div className="space-y-2 sm:space-y-3">
-                <RadioGroup
-                  value={formData.productType || ''}
-                  onValueChange={(value) => selectProductType(value as ProductType)}
-                  className="space-y-2 sm:space-y-3"
-                >
-                  {productOptions.map((option) => {
-                    const isSelected = formData.productType === option.value;
-                    const isHovered = hoveredOption === option.value;
+            {step !== 6 && (
+              <CardTitle className="text-xl sm:text-2xl md:text-3xl text-center font-bold text-white mb-2 px-2">
+                {getStepTitle()}
+              </CardTitle>
+            )}
+            {step !== 6 && getStepDescription() && (
+              <CardDescription className="text-center text-white/90 text-sm sm:text-base px-2">
+                {getStepDescription()}
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent className={`${step === 1 ? "pb-4 sm:pb-8" : ""} px-3 sm:px-0`}>
+            <div className="space-y-6">
+              {/* Step 1: Product Type - Interactive Cards */}
+              {step === 1 && (
+                <div className="space-y-2 sm:space-y-3">
+                  <RadioGroup
+                    value={formData.productType || ''}
+                    onValueChange={(value) => selectProductType(value as ProductType)}
+                    className="space-y-2 sm:space-y-3"
+                  >
+                    {productOptions.map((option) => {
+                      const isSelected = formData.productType === option.value;
+                      const isHovered = hoveredOption === option.value;
 
-                    // Icons/Emojis for each product type
-                    const productIcons = {
-                      cigarettes: '🚬',
-                      vape_disposable: '💨',
-                      pouches: '📦',
-                      dip: '🥤',
-                    };
+                      // Icons/Emojis for each product type
+                      const productIcons = {
+                        cigarettes: '🚬',
+                        vape_disposable: '💨',
+                        pouches: '📦',
+                        dip: '🥤',
+                      };
 
-                    return (
-                      <Label
-                        key={option.value}
-                        htmlFor={option.value}
-                        className={`
-                          group relative border-2 rounded-xl p-3 sm:p-4 md:p-5 cursor-pointer 
-                          transition-all duration-300 ease-out flex items-center
-                          transform hover:scale-[1.02] active:scale-[0.98]
-                          ${isSelected
-                            ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.02]'
-                            : isHovered
-                            ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                            : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
-                          }
-                        `}
-                        onMouseEnter={() => {
-                          if (!isSelected) {
-                            setHoveredOption(option.value);
-                          }
-                        }}
-                        onMouseLeave={() => {
-                          if (!isSelected) {
-                            setHoveredOption(null);
-                          }
-                        }}
-                      >
-                        {/* Selection indicator ring */}
-                        {isSelected && (
-                          <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
-                        )}
-                        
-                        {/* Radio button with custom styling */}
-                        <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-1">
-                          <div className="relative flex-shrink-0">
-                            <RadioGroupItem 
-                              value={option.value} 
-                              id={option.value} 
-                              className={`
-                                w-5 h-5 sm:w-6 sm:h-6 border-2 transition-all duration-300
+                      return (
+                        <Label
+                          key={option.value}
+                          htmlFor={option.value}
+                          className={`
+                            group relative border-2 rounded-xl p-3 sm:p-4 md:p-5 cursor-pointer 
+                            transition-all duration-300 ease-out flex items-center
+                            transform hover:scale-[1.02] active:scale-[0.98]
+                            ${isSelected
+                              ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.02]'
+                              : isHovered
+                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
+                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                            }
+                          `}
+                          onMouseEnter={() => {
+                            if (!isSelected) {
+                              setHoveredOption(option.value);
+                            }
+                          }}
+                          onMouseLeave={() => {
+                            if (!isSelected) {
+                              setHoveredOption(null);
+                            }
+                          }}
+                        >
+                          {/* Selection indicator ring */}
+                          {isSelected && (
+                            <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
+                          )}
+                          
+                          {/* Radio button with custom styling */}
+                          <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-1">
+                            <div className="relative flex-shrink-0">
+                              <RadioGroupItem 
+                                value={option.value} 
+                                id={option.value} 
+                                className={`
+                                  w-5 h-5 sm:w-6 sm:h-6 border-2 transition-all duration-300
+                                  ${isSelected 
+                                    ? 'border-[#AB0FB8] bg-[#AB0FB8]' 
+                                    : 'border-white/60 group-hover:border-white'
+                                  }
+                                `}
+                              />
+                              {isSelected && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full animate-in fade-in zoom-in duration-200" />
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Product icon */}
+                            <div className={`
+                              text-2xl sm:text-3xl transition-transform duration-300 flex-shrink-0
+                              ${isHovered || isSelected ? 'scale-110' : 'scale-100'}
+                            `}>
+                              {productIcons[option.value as keyof typeof productIcons] || '📦'}
+                            </div>
+                            
+                            {/* Text content */}
+                            <div className="flex-1 min-w-0">
+                              <div className={`
+                                font-bold text-base sm:text-lg md:text-xl mb-0.5 sm:mb-1 transition-colors duration-300
                                 ${isSelected 
-                                  ? 'border-[#AB0FB8] bg-[#AB0FB8]' 
-                                  : 'border-white/60 group-hover:border-white'
+                                  ? 'text-gray-900' 
+                                  : isHovered 
+                                  ? 'text-white' 
+                                  : 'text-white'
                                 }
-                              `}
-                            />
+                              `}>
+                                {option.label}
+                              </div>
+                              <div className={`
+                                text-xs sm:text-sm transition-colors duration-300
+                                ${isSelected
+                                  ? 'text-gray-700'
+                                  : isHovered
+                                  ? 'text-white/90'
+                                  : 'text-white/70'
+                                }
+                              `}>
+                                {option.description}
+                              </div>
+                            </div>
+                            
+                            {/* Selection checkmark */}
                             {isSelected && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full animate-in fade-in zoom-in duration-200" />
+                              <div className="flex-shrink-0 ml-1 sm:ml-2">
+                                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                                  <svg 
+                                    className="w-4 h-4 sm:w-5 sm:h-5 text-white" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path 
+                                      strokeLinecap="round" 
+                                      strokeLinejoin="round" 
+                                      strokeWidth={3} 
+                                      d="M5 13l4 4L19 7" 
+                                    />
+                                  </svg>
+                                </div>
                               </div>
                             )}
                           </div>
-                          
-                          {/* Product icon */}
-                          <div className={`
-                            text-2xl sm:text-3xl transition-transform duration-300 flex-shrink-0
-                            ${isHovered || isSelected ? 'scale-110' : 'scale-100'}
-                          `}>
-                            {productIcons[option.value as keyof typeof productIcons] || '📦'}
-                          </div>
-                          
-                          {/* Text content */}
-                          <div className="flex-1 min-w-0">
-                            <div className={`
-                              font-bold text-base sm:text-lg md:text-xl mb-0.5 sm:mb-1 transition-colors duration-300
-                              ${isSelected 
-                                ? 'text-gray-900' 
-                                : isHovered 
-                                ? 'text-white' 
-                                : 'text-white'
-                              }
-                            `}>
-                              {option.label}
-                            </div>
-                            <div className={`
-                              text-xs sm:text-sm transition-colors duration-300
-                              ${isSelected
-                                ? 'text-gray-700'
-                                : isHovered
-                                ? 'text-white/90'
-                                : 'text-white/70'
-                              }
-                            `}>
-                              {option.description}
-                            </div>
-                          </div>
-                          
-                          {/* Selection checkmark */}
+                        </Label>
+                      );
+                    })}
+                  </RadioGroup>
+                </div>
+              )}
+
+              {/* Step 2: Daily Usage - Interactive Cards */}
+              {step === 2 && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-5 gap-2 sm:gap-3">
+                    {[1, 2, 3, 4, 5].map((num) => {
+                      const isSelected = formData.weeklyUsage === num.toString();
+                      const isHovered = hoveredNumber === num;
+
+                      return (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, weeklyUsage: num.toString() });
+                            setTimeout(nextStep, 300);
+                          }}
+                          onMouseEnter={() => setHoveredNumber(num)}
+                          onMouseLeave={() => setHoveredNumber(null)}
+                          className={`
+                            group relative border-2 rounded-xl p-3 sm:p-4 md:p-6 cursor-pointer 
+                            transition-all duration-300 ease-out
+                            transform hover:scale-[1.05] active:scale-[0.95]
+                            flex flex-col items-center justify-center
+                            ${isSelected
+                              ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
+                              : isHovered
+                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
+                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                            }
+                          `}
+                        >
                           {isSelected && (
-                            <div className="flex-shrink-0 ml-1 sm:ml-2">
-                              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
-                                <svg 
-                                  className="w-4 h-4 sm:w-5 sm:h-5 text-white" 
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                    strokeWidth={3} 
-                                    d="M5 13l4 4L19 7" 
-                                  />
-                                </svg>
-                              </div>
+                            <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
+                          )}
+                          <div className={`
+                            text-2xl sm:text-3xl md:text-4xl font-bold transition-colors duration-300
+                            ${isSelected 
+                              ? 'text-gray-900' 
+                              : isHovered 
+                              ? 'text-white' 
+                              : 'text-white'
+                            }
+                          `}>
+                            {num}
+                          </div>
+                          {isSelected && (
+                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                              <svg 
+                                className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  strokeWidth={3} 
+                                  d="M5 13l4 4L19 7" 
+                                />
+                              </svg>
                             </div>
                           )}
-                        </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Cost Per Pack - Interactive Cards */}
+              {step === 3 && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                    {[6, 7, 8, 9].map((amount) => {
+                      const isSelected = formData.monthlySpending === amount.toString();
+                      const isHovered = hoveredNumber === amount;
+
+                      return (
+                        <button
+                          key={amount}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, monthlySpending: amount.toString() });
+                            setTimeout(nextStep, 300);
+                          }}
+                          onMouseEnter={() => setHoveredNumber(amount)}
+                          onMouseLeave={() => setHoveredNumber(null)}
+                          className={`
+                            group relative border-2 rounded-xl p-3 sm:p-4 md:p-6 cursor-pointer 
+                            transition-all duration-300 ease-out
+                            transform hover:scale-[1.05] active:scale-[0.95]
+                            flex flex-col items-center justify-center
+                            ${isSelected
+                              ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
+                              : isHovered
+                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
+                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                            }
+                          `}
+                        >
+                          {isSelected && (
+                            <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
+                          )}
+                          <div className={`
+                            text-lg sm:text-xl md:text-2xl font-bold transition-colors duration-300
+                            ${isSelected 
+                              ? 'text-gray-900' 
+                              : isHovered 
+                              ? 'text-white' 
+                              : 'text-white'
+                            }
+                          `}>
+                            ${amount}
+                          </div>
+                          {isSelected && (
+                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                              <svg 
+                                className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  strokeWidth={3} 
+                                  d="M5 13l4 4L19 7" 
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Duration - Interactive Cards */}
+              {step === 4 && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    {[
+                      { value: 'less_than_5', label: 'Less than 5 years' },
+                      { value: '5_to_10', label: '5 to 10 years' },
+                      { value: '10_to_20', label: '10 to 20' },
+                      { value: 'over_20', label: 'Over 20' },
+                    ].map((option) => {
+                      const isSelected = formData.duration === option.value;
+                      const isHovered = hoveredNumber === option.value;
+
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, duration: option.value });
+                            setTimeout(nextStep, 300);
+                          }}
+                          onMouseEnter={() => setHoveredNumber(option.value)}
+                          onMouseLeave={() => setHoveredNumber(null)}
+                          className={`
+                            group relative border-2 rounded-xl p-4 sm:p-5 md:p-6 cursor-pointer 
+                            transition-all duration-300 ease-out
+                            transform hover:scale-[1.05] active:scale-[0.95]
+                            flex flex-col items-center justify-center
+                            ${isSelected
+                              ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
+                              : isHovered
+                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
+                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                            }
+                          `}
+                        >
+                          {isSelected && (
+                            <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
+                          )}
+                          <div className={`
+                            text-sm sm:text-base md:text-lg font-bold transition-colors duration-300 text-center px-1
+                            ${isSelected 
+                              ? 'text-gray-900' 
+                              : isHovered 
+                              ? 'text-white' 
+                              : 'text-white'
+                            }
+                          `}>
+                            {option.label}
+                          </div>
+                          {isSelected && (
+                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                              <svg 
+                                className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  strokeWidth={3} 
+                                  d="M5 13l4 4L19 7" 
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Step 5: User Info Form */}
+              {step === 5 && (
+                <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
+                  {/* Two-column layout for name fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-white font-semibold block">
+                        First Name
                       </Label>
-                    );
-                  })}
-                </RadioGroup>
-              </div>
-            )}
+                      <Input
+                        id="firstName"
+                        type="text"
+                        placeholder="First name"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value, name: `${e.target.value} ${formData.lastName}`.trim() })}
+                        className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-white font-semibold block">
+                        Last Name
+                      </Label>
+                      <Input
+                        id="lastName"
+                        type="text"
+                        placeholder="Last name"
+                        value={formData.lastName}
+                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value, name: `${formData.firstName} ${e.target.value}`.trim() })}
+                        className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
+                      />
+                    </div>
+                  </div>
 
-            {/* Step 2: Daily Usage - Interactive Cards */}
-            {step === 2 && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-5 gap-2 sm:gap-3">
-                  {[1, 2, 3, 4, 5].map((num) => {
-                    const isSelected = formData.weeklyUsage === num.toString();
-                    const isHovered = hoveredNumber === num;
-
-                    return (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => {
-                          setFormData({ ...formData, weeklyUsage: num.toString() });
-                          setTimeout(nextStep, 300);
+                  {/* Two-column layout for email and phone */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-white font-semibold block">
+                        Email address
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Email address"
+                        value={formData.email}
+                        onChange={(e) => {
+                          setFormData({ ...formData, email: e.target.value });
+                          setEmailError(null);
                         }}
-                        onMouseEnter={() => setHoveredNumber(num)}
-                        onMouseLeave={() => setHoveredNumber(null)}
-                        className={`
-                          group relative border-2 rounded-xl p-3 sm:p-4 md:p-6 cursor-pointer 
-                          transition-all duration-300 ease-out
-                          transform hover:scale-[1.05] active:scale-[0.95]
-                          flex flex-col items-center justify-center
-                          ${isSelected
-                            ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
-                            : isHovered
-                            ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                            : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
-                          }
-                        `}
-                      >
-                        {isSelected && (
-                          <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
-                        )}
-                        <div className={`
-                          text-2xl sm:text-3xl md:text-4xl font-bold transition-colors duration-300
-                          ${isSelected 
-                            ? 'text-gray-900' 
-                            : isHovered 
-                            ? 'text-white' 
-                            : 'text-white'
-                          }
-                        `}>
-                          {num}
-                        </div>
-                        {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
-                            <svg 
-                              className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                            >
-                              <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                strokeWidth={3} 
-                                d="M5 13l4 4L19 7" 
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Cost Per Pack - Interactive Cards */}
-            {step === 3 && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                  {[6, 7, 8, 9].map((amount) => {
-                    const isSelected = formData.monthlySpending === amount.toString();
-                    const isHovered = hoveredNumber === amount;
-
-                    return (
-                      <button
-                        key={amount}
-                        type="button"
-                        onClick={() => {
-                          setFormData({ ...formData, monthlySpending: amount.toString() });
-                          setTimeout(nextStep, 300);
-                        }}
-                        onMouseEnter={() => setHoveredNumber(amount)}
-                        onMouseLeave={() => setHoveredNumber(null)}
-                        className={`
-                          group relative border-2 rounded-xl p-3 sm:p-4 md:p-6 cursor-pointer 
-                          transition-all duration-300 ease-out
-                          transform hover:scale-[1.05] active:scale-[0.95]
-                          flex flex-col items-center justify-center
-                          ${isSelected
-                            ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
-                            : isHovered
-                            ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                            : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
-                          }
-                        `}
-                      >
-                        {isSelected && (
-                          <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
-                        )}
-                        <div className={`
-                          text-lg sm:text-xl md:text-2xl font-bold transition-colors duration-300
-                          ${isSelected 
-                            ? 'text-gray-900' 
-                            : isHovered 
-                            ? 'text-white' 
-                            : 'text-white'
-                          }
-                        `}>
-                          ${amount}
-                        </div>
-                        {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
-                            <svg 
-                              className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                            >
-                              <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                strokeWidth={3} 
-                                d="M5 13l4 4L19 7" 
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Duration - Interactive Cards */}
-            {step === 4 && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                  {[
-                    { value: 'less_than_5', label: 'Less than 5 years' },
-                    { value: '5_to_10', label: '5 to 10 years' },
-                    { value: '10_to_20', label: '10 to 20' },
-                    { value: 'over_20', label: 'Over 20' },
-                  ].map((option) => {
-                    const isSelected = formData.duration === option.value;
-                    const isHovered = hoveredNumber === option.value;
-
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => {
-                          setFormData({ ...formData, duration: option.value });
-                          setTimeout(nextStep, 300);
-                        }}
-                        onMouseEnter={() => setHoveredNumber(option.value)}
-                        onMouseLeave={() => setHoveredNumber(null)}
-                        className={`
-                          group relative border-2 rounded-xl p-4 sm:p-5 md:p-6 cursor-pointer 
-                          transition-all duration-300 ease-out
-                          transform hover:scale-[1.05] active:scale-[0.95]
-                          flex flex-col items-center justify-center
-                          ${isSelected
-                            ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
-                            : isHovered
-                            ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                            : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
-                          }
-                        `}
-                      >
-                        {isSelected && (
-                          <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
-                        )}
-                        <div className={`
-                          text-sm sm:text-base md:text-lg font-bold transition-colors duration-300 text-center px-1
-                          ${isSelected 
-                            ? 'text-gray-900' 
-                            : isHovered 
-                            ? 'text-white' 
-                            : 'text-white'
-                          }
-                        `}>
-                          {option.label}
-                        </div>
-                        {isSelected && (
-                          <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
-                            <svg 
-                              className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                            >
-                              <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                strokeWidth={3} 
-                                d="M5 13l4 4L19 7" 
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 5: User Info Form */}
-            {step === 5 && (
-              <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
-                {/* Two-column layout for name fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-white font-semibold block">
-                      First Name
-                    </Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      placeholder="First name"
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value, name: `${e.target.value} ${formData.lastName}`.trim() })}
-                      className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
-                      autoFocus
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-white font-semibold block">
-                      Last Name
-                    </Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      placeholder="Last name"
-                      value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value, name: `${formData.firstName} ${e.target.value}`.trim() })}
-                      className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
-                    />
-                  </div>
-                </div>
-
-                {/* Two-column layout for email and phone */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-semibold block">
-                      Email address
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Email address"
-                      value={formData.email}
-                      onChange={(e) => {
-                        setFormData({ ...formData, email: e.target.value });
-                        setEmailError(null);
-                      }}
-                      className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
-                    />
-                    {emailError && (
-                      <p className="text-xs text-red-300 mt-1">{emailError}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-white font-semibold block">
-                      Phone No.
-                    </Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="Phone no."
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
-                    />
-                  </div>
-                </div>
-
-                {/* Separator with "or" */}
-                <div className="relative my-6">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/20"></div>
-                  </div>
-                  <div className="relative flex justify-center">
-                    <span className="bg-[#6B2C91] px-4 text-white/70 text-sm">or</span>
-                  </div>
-                </div>
-
-                {/* Social Login Buttons */}
-                <div className="space-y-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full h-12 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-lg flex items-center justify-center gap-3"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24">
-                      <path
-                        fill="currentColor"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
                       />
-                      <path
-                        fill="currentColor"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      {emailError && (
+                        <p className="text-xs text-red-300 mt-1">{emailError}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-white font-semibold block">
+                        Phone No.
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="Phone no."
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
                       />
-                      <path
-                        fill="currentColor"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                      />
-                      <path
-                        fill="currentColor"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                      />
-                    </svg>
-                    <span className="font-medium">Login with Google</span>
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full h-12 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-lg flex items-center justify-center gap-3"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg>
-                    <span className="font-medium">Login with Facebook</span>
-                  </Button>
-                </div>
+                    </div>
+                  </div>
 
-                {/* Continue Button */}
-                <div className="pt-4">
-                  <Button
-                    onClick={async () => {
-                      const isValid = await validateEmail();
-                      if (isValid) {
-                        nextStep();
-                      }
-                    }}
-                    className="w-full bg-[#AB0FB8] hover:bg-[#890C94] text-white font-semibold text-lg py-6 rounded-lg transition-all duration-300"
-                    size="lg"
-                    disabled={!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || isValidatingEmail}
-                  >
-                    {isValidatingEmail ? 'Checking...' : 'Continue'}
-                  </Button>
-                </div>
+                  {/* Separator with "or" */}
+                  <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-white/20"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                      <span className="bg-[#6B2C91] px-4 text-white/70 text-sm">or</span>
+                    </div>
+                  </div>
 
-                {/* Opt-in checkbox (shown when phone is filled) */}
-                {formData.phone && (
-                  <div className="flex items-center justify-center space-x-2 pt-2">
-                    <Checkbox
-                      id="optInMessages"
-                      checked={formData.optInMessages}
-                      onCheckedChange={(checked) =>
-                        setFormData({ ...formData, optInMessages: checked as boolean })
-                      }
-                    />
-                    <label
-                      htmlFor="optInMessages"
-                      className="text-sm font-medium text-white/90 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  {/* Social Login Buttons */}
+                  <div className="space-y-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full h-12 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-lg flex items-center justify-center gap-3"
                     >
-                      Opt in to receive text messages
-                    </label>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path
+                          fill="currentColor"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="currentColor"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="currentColor"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        />
+                        <path
+                          fill="currentColor"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        />
+                      </svg>
+                      <span className="font-medium">Login with Google</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full h-12 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-lg flex items-center justify-center gap-3"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                      <span className="font-medium">Login with Facebook</span>
+                    </Button>
                   </div>
-                )}
-              </div>
-            )}
 
-            {/* Step 6: Initial Pricing Offer */}
-            {step === 6 && !showFlashSale && (
-              <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
-                <div className="text-center space-y-3 sm:space-y-4">
-                  <img src="/logo.png" alt="QuitApp Logo" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2 sm:mb-4" />
-                  <h3 className="text-2xl sm:text-3xl font-bold">ONE TIME OFFER</h3>
-                  {/* 5-minute countdown timer */}
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <span className="text-lg font-semibold text-white">⏰ Offer expires in:</span>
-                    <span className="text-3xl font-bold text-white">
-                      {formatTime(timeLeft)}
-                    </span>
+                  {/* Continue Button */}
+                  <div className="pt-4">
+                    <Button
+                      onClick={async () => {
+                        const isValid = await validateEmail();
+                        if (isValid) {
+                          nextStep();
+                        }
+                      }}
+                      className="w-full bg-[#AB0FB8] hover:bg-[#890C94] text-white font-semibold text-lg py-6 rounded-lg transition-all duration-300"
+                      size="lg"
+                      disabled={!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || isValidatingEmail}
+                    >
+                      {isValidatingEmail ? 'Checking...' : 'Continue'}
+                    </Button>
                   </div>
-                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 p-6 sm:p-8 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
-                    {/* Urgency badge */}
-                    <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
+
+                  {/* Opt-in checkbox (shown when phone is filled) */}
+                  {formData.phone && (
+                    <div className="flex items-center justify-center space-x-2 pt-2">
+                      <Checkbox
+                        id="optInMessages"
+                        checked={formData.optInMessages}
+                        onCheckedChange={(checked) =>
+                          setFormData({ ...formData, optInMessages: checked as boolean })
+                        }
+                      />
+                      <label
+                        htmlFor="optInMessages"
+                        className="text-sm font-medium text-white/90 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Opt in to receive text messages
+                      </label>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Step 6: Initial Pricing Offer */}
+              {step === 6 && !showFlashSale && (
+                <div className="space-y-4 sm:space-y-6 py-4 sm:py-6 px-4">
+                  <div className="text-center space-y-3 sm:space-y-4">
+                    {/* <img src="/logo.png" alt="QuitApp Logo" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-2 sm:mb-4" /> */}
+                    <h3 
+                      className="text-[#F9C015] text-2xl sm:text-[30px] font-bold tracking-tight"
+                      style={{ 
+                        WebkitTextStroke: '1px #000',
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.25)'
+                      } as CSSProperties}
+                    >
                       ONE TIME OFFER
-                    </div>
-
-                    {/* Price display */}
-                    <div className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2 text-gray-900">
-                      $79
-                    </div>
-                    <p className="font-bold text-base sm:text-lg mb-2" style={{ color: '#FFD700' }}>Lifetime Access</p>
-                    <p className="font-semibold text-sm" style={{ color: '#B8860B' }}>⏰ This offer expires soon!</p>
-                  </div>
-
-                  {/* Personalized Impact Calculations */}
-                  <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 p-4 my-4">
-                    <p className="text-sm font-bold text-gray-800 mb-3">
-                      💡 {formData.productType === 'cigarettes' ? 'REAL COST OF SMOKING' :
-                         formData.productType === 'vape_disposable' ? 'REAL COST OF VAPING' :
-                         formData.productType === 'pouches' ? 'REAL COST OF NICOTINE POUCHES' :
-                         formData.productType === 'dip' ? 'REAL COST OF DIPPING' :
-                         'REAL COST OF YOUR HABIT'}:
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {/* Left column: Cost info */}
-                      <div className="space-y-3">
-                        <div className="bg-white p-3 shadow-sm">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Yearly Spending:</span>
-                            <span className="text-lg font-extrabold text-red-600">
-                              ${getHabitStats().yearlySpending.toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="bg-white p-3 shadow-sm border-2 border-red-300">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-gray-800">Total Spent So Far:</span>
-                            <span className="text-xl font-extrabold text-red-700">
-                              ${getHabitStats().totalSpent.toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-3 shadow-sm border-2 border-yellow-300">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-gray-800">Your Life</span>
-                            <span className="text-xl font-extrabold" style={{ color: '#FFD700' }}>
-                              priceless
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Right column: Health risks */}
-                      <div className="bg-white p-3 shadow-sm">
-                        <p className="text-xs font-bold text-red-600 mb-2">Health Risks:</p>
-                        <ul className="text-xs text-gray-700 space-y-1">
-                          <li>• Heart Attack</li>
-                          <li>• Stroke</li>
-                          <li>• Weakened Immune System</li>
-                          <li>• Amputation</li>
-                          <li>• Stinks</li>
-                          <li>• Cancer</li>
-                          <li>• Poor Circulation</li>
-                          <li>• Breathing Problems</li>
-                          <li>• Time Commitment</li>
-                          <li>• Emphysema</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <p className="text-xs text-center text-gray-600 mt-3">
-                      🎯 Invest just $79 today to break free and save ${getHabitStats().yearlySpending.toLocaleString()}/year!
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <Button
-                    onClick={nextStep}
-                    className="w-full text-white font-bold text-sm sm:text-base md:text-lg px-2 py-4 sm:py-6"
-                    style={{
-                      backgroundColor: '#FFD700',
-                    }}
-                    size="lg"
-                  >
-                    <span className="whitespace-nowrap">🚀 BUY NOW FOR $79 - LIMITED TIME OFFER!</span>
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setFormData({ ...formData, declinedInitialOffer: true });
-                      setShowFlashSale(true);
-                    }}
-                    variant="outline"
-                    className="w-full text-gray-500 hover:text-gray-600"
-                    size="lg"
-                  >
-                    No thanks
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Flash Sale Page - Emergency Offer */}
-            {step === 6 && showFlashSale && (
-              <div className="space-y-3 sm:space-y-4 py-4 sm:py-6">
-                <div className="text-center space-y-2 sm:space-y-3">
-                  {/* Emergency Header with Timer */}
-                  <div className="p-3 sm:p-4" style={{ backgroundColor: '#FFD700' }}>
-                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-white px-1">⚠️ WAIT! EXCLUSIVE FLASH SALE ⚠️</h3>
-                    <div className="mt-2 flex items-center justify-center gap-2">
-                      <span className="text-sm font-bold text-white/90">⏰ Expires in:</span>
-                      <span className="text-3xl font-bold text-white">
+                    </h3>
+                    {/* 5-minute countdown timer */}
+                    <div className="flex items-center justify-center gap-1 mb-4">
+                      <span className="text-sm font-regular text-white flex items-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10.75 20.75C16.2728 20.75 20.75 16.2728 20.75 10.75C20.75 5.22715 16.2728 0.75 10.75 0.75C5.22715 0.75 0.75 5.22715 0.75 10.75C0.75 16.2728 5.22715 20.75 10.75 20.75Z" stroke="white" stroke-width="1.5"/>
+                          <path d="M12.25 14.75C12.25 14.75 9.25 11.804 9.25 10.75C9.25 9.6959 12.25 6.75 12.25 6.75" stroke="white" stroke-width="1.5"/>
+                        </svg>
+                         Offer expires in:</span>
+                      <span className="text-base font-semibold text-white">
                         {formatTime(timeLeft)}
                       </span>
                     </div>
-                  </div>
+                    <div className="bg-white px-6 py-5 relative overflow-hidden rounded-lg">
+                      {/* Urgency badge */}
+                      {/* <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
+                        ONE TIME OFFER
+                      </div> */}
 
-                  {/* Price Comparison + Seats in One Block */}
-                  <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 p-4 sm:p-6 border-4 shadow-2xl relative overflow-hidden" style={{ borderColor: '#FFD700' }}>
-                    {/* Flash Sale Badge */}
-                    <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
-                      75% OFF!
+                      {/* Price display */}
+                      <div className="text-4xl md:text-5xl lg:text-[80px] font-bold mb-2 text-[#561F7A]">
+                        $79
+                      </div>
+                      <p className="font-regular text-base mb-2 text-[#561F7A]">Lifetime Access</p>
+                      <div className="flex items-center justify-center">
+                        <Button variant="default" className="bg-[#F9C015] text-[#561F7A] font-bold text-sm md:text-base hover:scale-105 transition-all duration-300">
+                          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z" stroke="#561F7A" stroke-width="2"/>
+                            <path d="M12.5 15C12.5 15 9.5 12.054 9.5 11C9.5 9.9459 12.5 7 12.5 7" stroke="#561F7A" stroke-width="2"/>
+                          </svg>
+                              Offer expires soon!
+                        </Button>
+                      </div>
                     </div>
 
-                    {/* Old Price Strikethrough */}
-                    <div className="relative inline-block mb-2">
-                      <span className="text-2xl sm:text-3xl font-bold text-gray-400" style={{ textDecoration: 'line-through', textDecorationColor: '#FFD700', textDecorationThickness: '3px' }}>
-                        $79
+                    {/* Personalized Impact Calculations */}
+                    <div className="bg-white px-4 py-8 my-4 rounded-xl">
+                      <div className="max-w-[521px] mx-auto">
+                        <p className="sm:text-xl text-base font-bold text-[#561F7A] mb-5">
+                          {formData.productType === 'cigarettes' ? 'REAL COST OF SMOKING' :
+                            formData.productType === 'vape_disposable' ? 'REAL COST OF VAPING' :
+                            formData.productType === 'pouches' ? 'REAL COST OF NICOTINE POUCHES' :
+                            formData.productType === 'dip' ? 'REAL COST OF DIPPING' :
+                            'REAL COST OF YOUR HABIT'}
+                        </p>
+                        <div className="flex flex-col md:flex-row justify-between">
+                          {/* Left column: Cost info */}
+                          <div className="space-y-3 w-full md:w-[57%]">
+                            <div className="bg-[#F2F2F2] p-4 shadow-sm rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">Yearly Spending:</span>
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">
+                                  ${getHabitStats().yearlySpending.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="bg-[#F2F2F2] p-4 shadow-sm rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">Total Spent So Far:</span>
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">
+                                  ${getHabitStats().totalSpent.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="bg-[#F2F2F2] p-4 shadow-sm rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">Your Life</span>
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">
+                                  priceless
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          {/* Right column: Health risks */}
+                          <div className="w-full md:w-[37%] mt-4 md:mt-0">
+                            <p className="text-base font-bold text-[#561F7A] mb-1 text-start">Health Risks:</p>
+                            <ul className="text-xs text-[#561F7A] space-y-1">
+                              <li className="flex items-center gap-2">
+                              <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Heart Attack
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Stroke
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Weakened Immune System
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Amputation</li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Stinks</li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Cancer</li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Poor Circulation</li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Breathing Problems</li>
+                                <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Time Commitment</li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Emphysema</li>
+                            </ul>
+                          </div>
+                        </div>
+                        {/* <p className="text-xs text-center text-gray-600 mt-3">
+                          🎯 Invest just $79 today to break free and save ${getHabitStats().yearlySpending.toLocaleString()}/year!
+                        </p> */}
+                        </div>
+                    </div>
+                  </div>
+                    <p className="text-xs font-regular text-center text-[#FFFFFF] !mt-3">
+                      Invest just $79 today to break free and save ${getHabitStats().yearlySpending.toLocaleString()}/year!
+                    </p>
+                  <div className="space-y-3">
+                    <div className='flex justify-center items-center max-w-[418px] mx-auto'>
+                      <Button
+                        onClick={nextStep}
+                        className="w-full bg-[#F9C015] text-[#561F7A] font-semibold text-sm md:text-xl !p-5 md:h-[70px] h-[50px] rounded-[10px] hover:scale-105 transition-all duration-300"
+                        >
+                          Buy  Now for $79 - LIMITED TIME OFFER 
+                      </Button>
+                      </div>
+                      <div className='flex justify-center items-center max-w-[418px] mx-auto'>
+                      <Button
+                        onClick={() => {
+                          setFormData({ ...formData, declinedInitialOffer: true });
+                          setShowFlashSale(true);
+                        }}
+                        variant="outline"
+                        className="w-full md:h-[70px] h-[50px] border-none bg-[#664490] hover:bg-[#5d368c] text-[#ffffff6b] hover:text-[#ffffff] font-semibold text-sm md:text-xl rounded-[10px] hover:scale-105 transition-all duration-300"
+                        >
+                        No thanks
+                      </Button>
+                      </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Flash Sale Page - Emergency Offer */}
+              {step === 6 && showFlashSale && (
+                <div className="space-y-4 sm:space-y-6 py-4 sm:py-6 px-4">
+                  <div className="text-center space-y-3 sm:space-y-4">
+                    {/* Header */}
+                    <h3 
+                      className="text-[#F9C015] text-2xl sm:text-[30px] font-bold tracking-tight"
+                      // style={{ 
+                      //   WebkitTextStroke: '1px #000',
+                      //   textShadow: '2px 2px 4px rgba(0, 0, 0, 0.25)'
+                      // } as CSSProperties}
+                    >
+                      WAIT! EXCLUSIVE FLASH SALE
+                    </h3>
+                    
+                    {/* Countdown timer */}
+                    <div className="flex items-center justify-center gap-1 mb-4">
+                      <span className="text-sm font-regular text-white flex items-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10.75 20.75C16.2728 20.75 20.75 16.2728 20.75 10.75C20.75 5.22715 16.2728 0.75 10.75 0.75C5.22715 0.75 0.75 5.22715 0.75 10.75C0.75 16.2728 5.22715 20.75 10.75 20.75Z" stroke="white" strokeWidth="1.5"/>
+                          <path d="M12.25 14.75C12.25 14.75 9.25 11.804 9.25 10.75C9.25 9.6959 12.25 6.75 12.25 6.75" stroke="white" strokeWidth="1.5"/>
+                        </svg>
+                        Offer expires in:
+                      </span>
+                      <span className="text-base font-semibold text-white">
+                        {formatTime(timeLeft)}
                       </span>
                     </div>
 
-                    {/* New Price */}
-                    <div className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2 text-gray-900 break-words">
-                      $19.99
-                    </div>
-                    <p className="font-bold text-base sm:text-lg mb-1" style={{ color: '#FFD700' }}>One-time payment</p>
-                    <p className="text-sm font-semibold text-orange-600">💥 Save $59.01 today!</p>
+                    {/* Price card */}
+                    <div className="bg-white px-6 py-5 relative overflow-hidden rounded-lg">
+                      {/* Flash Sale Badge */}
+                      {/* <div className="absolute top-2 right-2 text-white text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#FFD700' }}>
+                        75% OFF!
+                      </div> */}
 
-                    {/* Seats Counter - Compact */}
-                    <div className="mt-3 p-3 rounded-lg" style={{ backgroundColor: '#FFD700' }}>
-                      {seatsLeft > 1 ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="text-2xl sm:text-3xl font-bold text-white">{seatsLeft}</span>
-                          <span className="text-xs sm:text-sm font-bold text-white">SEATS LEFT</span>
+                      {/* Old Price Strikethrough */}
+                      <div className="relative inline-block mb-2">
+                        <span className="text-xl sm:text-[24px] font-regular text-[#561F7A]" style={{ textDecoration: 'line-through', textDecorationColor: '#561F7A', textDecorationThickness: '1px' }}>
+                          $79.00
+                        </span>
+                      </div>
+
+                      {/* New Price */}
+                      <div className="text-4xl md:text-5xl lg:text-[80px] font-bold mb-2 text-[#561F7A]">
+                        $19.99
+                      </div>
+                      <p className="font-regular text-base mb-2 text-[#561F7A]">One-time payment. Save $59.01 today!</p>
+
+                      {/* <div className="flex items-center justify-center">
+                        <Button variant="default" className="bg-[#F9C015] text-[#561F7A] font-bold text-base hover:scale-105 transition-all duration-300">
+                          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z" stroke="#561F7A" strokeWidth="2"/>
+                            <path d="M12.5 15C12.5 15 9.5 12.054 9.5 11C9.5 9.9459 12.5 7 12.5 7" stroke="#561F7A" strokeWidth="2"/>
+                          </svg>
+                          💥 Save $59.01 - Limited Time!
+                        </Button>
+                      </div> */}
+                      
+                      {/* Seats Counter */}
+                      <div className="p-0 m-0">
+                        {seatsLeft > 1 ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <Button variant="default" className="h-[45px] shadow-none !border-none bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#561F7A] hover:text-[#561F7A] md:text-base rounded-[10px] hover:scale-105 transition-all duration-300 text-xs sm:text-sm font-bold flex items-center justify-center gap-2"> 
+                            <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z" stroke="#561F7A" stroke-width="2"/>
+                              <path d="M12.5 15C12.5 15 9.5 12.054 9.5 11C9.5 9.9459 12.5 7 12.5 7" stroke="#561F7A" stroke-width="2"/>
+                            </svg> {seatsLeft} SEATS LEFT</Button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                          <Button variant="default" className="h-[45px] shadow-none !border-none bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#561F7A] hover:text-[#561F7A] md:text-base rounded-[10px] hover:scale-105 transition-all duration-300 text-xs sm:text-sm font-bold flex items-center justify-center gap-2">
+                            <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z" stroke="#561F7A" stroke-width="2"/>
+                              <path d="M12.5 15C12.5 15 9.5 12.054 9.5 11C9.5 9.9459 12.5 7 12.5 7" stroke="#561F7A" stroke-width="2"/>
+                            </svg> 
+                            Your spot is RESERVED!
+                        </Button>
                         </div>
-                      ) : (
-                        <p className="text-xs sm:text-sm font-bold text-white">✅ Your spot is RESERVED!</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Personalized Impact Calculations */}
+                    <div className="bg-white px-4 py-6 my-4 rounded-xl">
+                      <div className="max-w-[521px] mx-auto">
+                        <p className="sm:text-xl text-base font-bold text-[#561F7A] mb-5">
+                          {formData.productType === 'cigarettes' ? 'REAL COST OF SMOKING' :
+                            formData.productType === 'vape_disposable' ? 'REAL COST OF VAPING' :
+                            formData.productType === 'pouches' ? 'REAL COST OF NICOTINE POUCHES' :
+                            formData.productType === 'dip' ? 'REAL COST OF DIPPING' :
+                            'REAL COST OF YOUR HABIT'}
+                        </p>
+                        <div className="">
+                          {/* Left column: Cost info */}
+                          <div className="space-y-3 w-full">
+                            <div className="bg-[#F2F2F2] p-4 shadow-sm rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">Yearly Spending:</span>
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">
+                                  ${getHabitStats().yearlySpending.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="bg-[#F2F2F2] p-4 shadow-sm rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm md:text-base font-bold text-[#E40000]">Total Wasted:</span>
+                                <span className="text-sm md:text-base font-bold text-[#E40000]">
+                                  ${getHabitStats().totalSpent.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="bg-[#F2F2F2] p-4 shadow-sm rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">Your Life</span>
+                                <span className="text-sm md:text-base font-bold text-[#561F7A]">
+                                  priceless
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          {/* Right column: Health risks */}
+                          {/* <div className="w-full md:w-[37%]">
+                            <p className="text-base font-bold text-[#561F7A] mb-1 text-start">Health Risks:</p>
+                            <ul className="text-xs text-[#561F7A] space-y-1">
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Heart Attack
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Stroke
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Weakened Immune System
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Amputation
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Stinks
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Cancer
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Poor Circulation
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Breathing Problems
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Time Commitment
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.49989 7.64166L6.50137 4.75654C7.16818 4.37189 7.16854 3.40964 6.50202 3.02449L1.50269 0.135635C0.836162 -0.249513 0.00264961 0.231301 0.00236261 1.0011L0.000209932 6.77508C-7.70692e-05 7.54488 0.833078 8.02631 1.49989 7.64166Z" fill="#F9C015"/>
+                                </svg>
+                                Emphysema
+                              </li>
+                            </ul>
+                          </div> */}
+                        </div>
+                      </div>
+                      {/* Call to action text */}
+                      <p className="text-xs font-regular text-center text-[#787878] !mt-5">
+                        Save ${getHabitStats().yearlySpending.toLocaleString()}/year for just $19.99 today!
+                      </p>
+                    </div>
+                  </div>
+                  
+                  
+                  {/* Action buttons */}
+                  <div className="space-y-3">
+                    <div className='flex justify-center items-center max-w-[418px] mx-auto'>
+                      <Button
+                        onClick={nextStep}
+                        className="w-full bg-[#F9C015] text-[#561F7A] hover:text-[#561F7A] font-semibold text-sm md:text-xl !p-5 h-[70px] rounded-[10px] hover:scale-105 transition-all duration-300"
+                      >
+                       {/* YES! GIVE ME 75% OFF - $19.99! */}
+                       Buy  Now for $79 - LIMITED TIME OFFER 
+                      </Button>
+                    </div>
+                    <div className='flex justify-center items-center max-w-[418px] mx-auto'>
+                      <Button
+                        onClick={nextStep}
+                        variant="outline"
+                        className="w-full h-[70px] border-none bg-[#664490] hover:bg-[#5d368c] text-[#ffffff6b] hover:text-[#ffffff] font-semibold text-sm md:text-xl rounded-[10px] hover:scale-105 transition-all duration-300"
+                      >
+                        No, I'll pay $79
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 7: Password Creation */}
+              {step === 7 && (
+                <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
+                  {/* Two-column layout for password fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-white font-semibold block">
+                        Create a password
+                      </Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="At least 8 characters"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
+                        autoFocus
+                      />
+                      {formData.password && formData.password.length < 8 && (
+                        <p className="text-xs text-red-300 mt-1">
+                          Password must be at least 8 characters
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword" className="text-white font-semibold block">
+                        Confirm password
+                      </Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="Re-enter your password"
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                        className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
+                      />
+                      {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                        <p className="text-xs text-red-300 mt-1">
+                          Passwords do not match
+                        </p>
                       )}
                     </div>
                   </div>
 
-                  {/* Personalized ROI - Compact */}
-                  <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-400 p-3">
-                    <p className="text-xs font-bold text-gray-800 mb-2">💰 What You're Really Spending:</p>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between bg-white rounded p-2">
-                        <span className="text-xs text-gray-600">Per Year:</span>
-                        <span className="text-sm font-bold" style={{ color: '#FFD700' }}>
-                          {getHabitStats().yearlyUsage.toLocaleString()} {getHabitStats().label.unit}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between bg-white rounded p-2">
-                        <span className="text-xs text-gray-600">Yearly Cost:</span>
-                        <span className="text-sm font-bold text-red-600">
-                          ${getHabitStats().yearlySpending.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between bg-red-100 rounded p-2 border border-red-300">
-                        <span className="text-xs font-bold text-gray-800">Total Wasted:</span>
-                        <span className="text-base font-extrabold text-red-700">
-                          ${getHabitStats().totalSpent.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Single Urgency Message */}
-                  <div className="bg-yellow-50 border-2 border-yellow-400 p-2">
-                    <p className="text-xs font-bold text-gray-800">
-                      ⚠️ Save ${getHabitStats().yearlySpending.toLocaleString()}/year for just $19.99!
-                    </p>
+                  {/* Continue Button */}
+                  <div className="pt-4">
+                    <Button
+                      onClick={handleSubmit}
+                      className="w-full bg-[#AB0FB8] hover:bg-[#890C94] text-white font-semibold text-sm sm:text-base md:text-lg py-4 sm:py-6 rounded-lg transition-all duration-300 px-2"
+                      size="lg"
+                      disabled={
+                        formData.password.length < 8 || 
+                        formData.password !== formData.confirmPassword ||
+                        !formData.confirmPassword
+                      }
+                    >
+                      <span className="whitespace-nowrap">Create Account & Start Journey</span>
+                    </Button>
                   </div>
                 </div>
+              )}
 
-                {/* Action Buttons */}
-                <div className="space-y-2">
-                  <Button
-                    onClick={nextStep}
-                    className="w-full text-white font-bold text-sm sm:text-base md:text-lg px-2 py-4 sm:py-6"
-                    style={{
-                      backgroundColor: '#FFD700',
-                    }}
-                    size="lg"
-                  >
-                    <span className="whitespace-nowrap">💰 YES! GIVE ME 75% OFF - $19.99!</span>
+              {/* Navigation Buttons */}
+              {step > 1 && step !== 6 && step !== 7 && (
+                <div className="flex justify-between pt-6 border-t">
+                  <Button variant="outline" onClick={prevStep} className="text-black">
+                    Back
                   </Button>
-                  <Button
-                    onClick={nextStep}
-                    variant="outline"
-                    className="w-full text-xs text-gray-400 hover:text-gray-500 border-gray-300"
-                    size="sm"
-                  >
-                    No, I'll pay $79
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 7: Password Creation */}
-            {step === 7 && (
-              <div className="space-y-4 sm:space-y-6 py-4 sm:py-6">
-                {/* Two-column layout for password fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white font-semibold block">
-                      Create a password
-                    </Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="At least 8 characters"
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
-                      autoFocus
-                    />
-                    {formData.password && formData.password.length < 8 && (
-                      <p className="text-xs text-red-300 mt-1">
-                        Password must be at least 8 characters
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-white font-semibold block">
-                      Confirm password
-                    </Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Re-enter your password"
-                      value={formData.confirmPassword}
-                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                      className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-[#FFC107] focus:ring-[#FFC107] rounded-lg"
-                    />
-                    {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                      <p className="text-xs text-red-300 mt-1">
-                        Passwords do not match
-                      </p>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <span>Already have an account?</span>
+                    <Link to="/login" className="text-[#FFC107] hover:text-[#c49005] font-bold">Login</Link>
                   </div>
                 </div>
-
-                {/* Continue Button */}
-                <div className="pt-4">
-                  <Button
-                    onClick={handleSubmit}
-                    className="w-full bg-[#AB0FB8] hover:bg-[#890C94] text-white font-semibold text-sm sm:text-base md:text-lg py-4 sm:py-6 rounded-lg transition-all duration-300 px-2"
-                    size="lg"
-                    disabled={
-                      formData.password.length < 8 || 
-                      formData.password !== formData.confirmPassword ||
-                      !formData.confirmPassword
-                    }
-                  >
-                    <span className="whitespace-nowrap">Create Account & Start Journey</span>
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            {step > 1 && step !== 6 && step !== 7 && (
-              <div className="flex justify-between pt-6 border-t">
-                <Button variant="outline" onClick={prevStep} className="text-black">
-                  Back
-                </Button>
-                <div className="flex items-center gap-2">
-                  <span>Already have an account?</span>
-                  <Link to="/login" className="text-[#FFC107] hover:text-[#c49005] font-bold">Login</Link>
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
+              )}
+            </div>
+          </CardContent>
+        </div>
       </Card>
       {/* Right side: Video (only for step 6) */}
       {step === 6 && (
-        <div className="w-full h-screen bg-black flex items-center justify-center overflow-hidden">
-          <div className="w-full h-full overflow-hidden relative">
-            <iframe
-              className="absolute inset-0 w-full h-full border-0"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Video placeholder"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+        <div className="w-full h-screen bg-[#fff] flex items-center justify-center overflow-hidden p-4 sm:p-6 lg:p-8"
+        >
+          <div className="w-full h-full max-w-6xl relative rounded-xl overflow-hidden shadow-2xl border-4 border-[#F9C015]/40">
+            <iframe 
+             className="absolute inset-0 w-full h-full border-0"
+             src="https://www.youtube.com/embed/JGwWNGJdvx8?list=PLPSCssPYXhWTTcpNZwYoEQWt8Wc8KO0NV"
+             title="Ed Sheeran - Shape of You (Official Music Video)"
+             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+             allowFullScreen>
+            </iframe>
           </div>
         </div>
       )}
     </div>
+    </>
   );
 }
