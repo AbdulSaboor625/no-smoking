@@ -12,7 +12,7 @@ const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
   const displayLabel = displayName.includes(' ') ? displayName.split(' ')[0] : displayName;
 
   return (
-    <header className="px-4 md:py-8 py-5 md:px-6">
+    <header className="px-4 md:py-8 py-3 md:px-6">
       <div className="flex flex-row items-start lg:items-center justify-end md:justify-between gap-4 lg:gap-6 xl:gap-8">
         {/* Hamburger Menu Button - Visible on all screens below xl, hidden on xl+ */}
         <Button

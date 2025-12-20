@@ -9,11 +9,16 @@ import { StatisticsPage } from './pages/StatisticsPage';
 import { EducationPage } from './pages/EducationPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { EmergencyHelpPage } from './pages/EmergencyHelpPage';
+import { LandingPage } from './pages/LandingPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <OnboardingPage />,
+  },
+  {
+    path: '/landing',
+    element: <LandingPage />,
   },
   {
     path: '/login',

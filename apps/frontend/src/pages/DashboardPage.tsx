@@ -386,7 +386,7 @@ export function DashboardPage() {
         </FadeIn> */}
 
         {/* Recent Activity */}
-        {recentTriggers && recentTriggers.length > 0 && (
+        {/* {recentTriggers && recentTriggers.length > 0 && (
           <FadeIn delay={0.9}>
             <Card className="border-0 shadow-md">
               <CardHeader>
@@ -426,11 +426,11 @@ export function DashboardPage() {
               </CardContent>
             </Card>
           </FadeIn>
-        )}
+        )} */}
       </motion.div>
 
       {/* Modals */}
-      {showMorningCommitment && (
+      {/* {showMorningCommitment && (
         <MorningCommitmentModal
           quitAttemptId={quitAttempt.id}
           onClose={() => setShowMorningCommitment(false)}
@@ -443,7 +443,7 @@ export function DashboardPage() {
           onClose={() => setShowEveningReflection(false)}
           onReflect={handleEveningReflect}
         />
-      )}
+      )} */}
     </AppShell>
   );
 }
