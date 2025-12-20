@@ -133,20 +133,20 @@ export function Sidebar({ onClose, isMobile }: SidebarProps) {
               to="/settings"
               onClick={() => isMobile && onClose?.()}
               className={cn(
-                'flex items-center gap-3 py-2 px-2 rounded transition-colors',
+                'text-[20px] flex items-center gap-3 py-3 px-2 rounded transition-colors group',
                 location.pathname === '/settings'
-                  ? 'text-[#561F7A]'
-                  : 'text-[#000000] hover:text-[#561F7A]'
+                  ? 'text-[#561F7A] !font-semibold'
+                  : 'text-[#000000] hover:text-[#561F7A] hover:font-semibold'
               )}
             >
               <Settings 
                 className={cn(
-                  'h-5 w-5 flex-shrink-0',
+                  'h-[22px] w-[22px] group-hover:font-semibold flex-shrink-0',
                   location.pathname === '/settings' ? 'stroke-[#561F7A]' : 'stroke-[#000000]'
                 )}
                 strokeWidth={location.pathname === '/settings' ? 2 : 1.5}
               />
-              <span className="text-sm font-normal">
+              <span className="text-[20px] group-hover:font-semibold">
                 Settings
               </span>
             </Link>
@@ -176,7 +176,7 @@ export function Sidebar({ onClose, isMobile }: SidebarProps) {
               Are you sure you want to logout? You will need to login again to access your account.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className='flex justify-center gap-4'>
             <Button
               variant="outline"
               onClick={() => setIsLogoutDialogOpen(false)}

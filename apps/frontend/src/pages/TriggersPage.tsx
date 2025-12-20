@@ -191,7 +191,7 @@ export function TriggersPage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">No triggers logged yet</p>
+                    <p className="pt-4 text-[14px] md:text-base text-[#fff]/80 text-center font-normal">No triggers logged yet</p>
                   )}
                 </CardContent>
               </Card>
