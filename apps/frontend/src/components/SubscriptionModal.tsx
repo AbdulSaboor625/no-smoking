@@ -130,7 +130,7 @@ export function SubscriptionModal({ isOpen, onClose, daysRemaining }: Subscripti
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader className="h-5 w-5 animate-spin" />
                 Loading...
               </span>
             ) : (

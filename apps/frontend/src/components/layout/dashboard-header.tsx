@@ -1,15 +1,34 @@
 import { MessageCircle, Bell, Menu } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '../ui/button';
+import { useLocation } from 'react-router-dom';
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
 }
 
+// Map routes to page titles
+const getPageTitle = (pathname: string): string => {
+  const routeTitleMap: Record<string, string> = {
+    '/dashboard': 'Stop Smoking Dashboard',
+    '/settings': 'Stop Smoking Settings',
+    '/education': 'Stop Smoking Education',
+    '/progress': 'Stop Smoking Progress',
+    '/triggers': 'Stop Smoking Awareness',
+    '/milestones': 'Stop Smoking Quit Date',
+    '/statistics': 'Stop Smoking Statistics',
+    '/emergency': 'Emergency Help',
+  };
+
+  return routeTitleMap[pathname] || 'Stop Smoking Dashboard';
+};
+
 const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
   const { user } = useAuthStore();
+  const location = useLocation();
   const displayName = user?.username || user?.email?.split('@')[0] || 'User';
   const displayLabel = displayName.includes(' ') ? displayName.split(' ')[0] : displayName;
+  const pageTitle = getPageTitle(location.pathname);
 
   return (
     <header className="px-4 md:py-8 py-3 md:px-6">
@@ -28,7 +47,7 @@ const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
             variant="default"
             className="w-full justify-center px-5 sm:px-6 text-[#561F7A] font-semibold  text-base xl:text-xl 2xl:text-[28px] bg-[#F9C015] border border-[#561F7A] rounded-full h-[44px] xl:h-[54px] 2xl:h-[63px] hover:bg-[#dfb330] transition-all duration-200 cursor-pointer"
           >
-            Stop Smoking Dashboard
+            {pageTitle}
           </Button>
         </div>
 

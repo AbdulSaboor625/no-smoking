@@ -10,6 +10,7 @@ import { trpc } from '@/lib/trpc';
 import { type ProductType } from '@smoking-quit/shared-types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/stores/authStore';
+import { Loader2 } from 'lucide-react';
 
 const productOptions: { value: ProductType; label: string; description: string }[] = [
   { value: 'cigarettes', label: 'Cigarettes', description: 'Traditional cigarettes' },
@@ -955,7 +956,7 @@ export function OnboardingPage() {
                       size="lg"
                       disabled={!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || isValidatingEmail}
                     >
-                      {isValidatingEmail ? 'Checking...' : 'Continue'}
+                      {isValidatingEmail ? <Loader2 className="min-h-5 min-w-5 animate-spin" /> : 'Continue'}
                     </Button>
                   </div>
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Lock, Loader2 } from 'lucide-react';
+import { Lock, Loader } from 'lucide-react';
 import { trpc } from '../lib/trpc';
 
 interface PaymentWallProps {
@@ -117,8 +117,7 @@ export function PaymentWall({ reason }: PaymentWallProps) {
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Loading...
+              <Loader className="min-h-5 min-w-5 animate-spin" />
             </span>
           ) : (
             'Subscribe Now'
