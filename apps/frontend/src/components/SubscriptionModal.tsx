@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Check, Loader2 } from 'lucide-react';
+import { X, Check, Loader } from 'lucide-react';
 import { trpc } from '../lib/trpc';
 
 interface SubscriptionModalProps {

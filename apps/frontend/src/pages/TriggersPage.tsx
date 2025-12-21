@@ -15,7 +15,6 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { type TriggerType } from '@smoking-quit/shared-types';
 import { CheckCircle, Loader, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 
 const triggerOptions: { value: TriggerType; label: string }[] = [
   { value: 'coffee', label: 'Coffee/Caffeine' },
