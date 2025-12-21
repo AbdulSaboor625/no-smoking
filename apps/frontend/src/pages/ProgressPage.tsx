@@ -23,7 +23,7 @@ import { z } from "zod";
 import { trpc } from "@/lib/trpc";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { Smile, Meh, Frown, SmilePlus, Angry, Calendar } from "lucide-react";
+import { Smile, Meh, Frown, SmilePlus, Angry, Calendar, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   FadeIn,
@@ -271,7 +271,7 @@ export function ProgressPage() {
                             disabled={createLog.isPending}
                             className="w-full bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#561F7A] font-semibold rounded-lg h-[70px] text-lg"
                           >
-                            {createLog.isPending ? 'Saving...' : 'Log Craving'}
+                            {createLog.isPending ? <Loader className="animate-spin min-h-5 min-w-5" /> : 'Log Craving'}
                           </Button>
                         </div>
                       </div>

@@ -170,6 +170,17 @@
   scrollbar-color: #D3D3D3 transparent;
 }
 
+/* Hide number input spinner (chevron up/down) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 /* Hide default date picker icon */
 input[type="date"]::-webkit-calendar-picker-indicator {
   display: none;

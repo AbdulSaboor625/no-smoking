@@ -14,7 +14,7 @@ import { trpc } from '@/lib/trpc';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { type TriggerType } from '@smoking-quit/shared-types';
-import { CheckCircle, X } from 'lucide-react';
+import { CheckCircle, Loader, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const triggerOptions: { value: TriggerType; label: string }[] = [
@@ -372,7 +372,7 @@ export function TriggersPage() {
                       disabled={createTrigger.isPending} 
                       className="w-full bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#561F7A] font-semibold rounded-lg md:h-[70px] h-11 text-sm md:text-lg"
                     >
-                      {createTrigger.isPending ? 'Saving...' : 'Log Craving'}
+                      {createTrigger.isPending ? <Loader className="animate-spin min-h-5 min-w-5" /> : 'Log Craving'}
                     </Button>
                       </div>
                     </div>

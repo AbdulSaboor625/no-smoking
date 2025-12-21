@@ -9,6 +9,7 @@ export function EmergencyHelpPage() {
   const [timerSeconds, setTimerSeconds] = useState(300); // 5 minutes
   const [breathingActive, setBreathingActive] = useState(false);
   const [breathPhase, setBreathPhase] = useState<'inhale' | 'hold' | 'exhale'>('inhale');
+  const [breathCountdown, setBreathCountdown] = useState(4); // Countdown for current phase
   const [showReasons, setShowReasons] = useState(false);
   const breathingRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<HTMLDivElement>(null);
@@ -34,28 +35,75 @@ export function EmergencyHelpPage() {
     return () => clearInterval(interval);
   }, [activeTimer]);
 
-  // Breathing Exercise Animation
+  // Breathing Exercise Animation with Countdown
   useEffect(() => {
-    if (!breathingActive) return;
-
-    const cycle = async () => {
-      // Inhale: 4 seconds
+    if (!breathingActive) {
+      setBreathCountdown(4);
       setBreathPhase('inhale');
-      await new Promise(resolve => setTimeout(resolve, 4000));
+      return;
+    }
 
-      // Hold: 7 seconds
-      setBreathPhase('hold');
-      await new Promise(resolve => setTimeout(resolve, 7000));
+    let countdownInterval: NodeJS.Timeout | null = null;
+    let isActive = true;
 
-      // Exhale: 8 seconds
-      setBreathPhase('exhale');
-      await new Promise(resolve => setTimeout(resolve, 8000));
+    // Define phases in order
+    const phases: Array<{ phase: 'inhale' | 'hold' | 'exhale'; duration: number }> = [
+      { phase: 'inhale', duration: 4 },
+      { phase: 'hold', duration: 7 },
+      { phase: 'exhale', duration: 8 },
+    ];
+
+    let currentPhaseIndex = 0;
+
+    const startNextPhase = () => {
+      if (!isActive) return;
+
+      // Move to next phase (or restart cycle)
+      currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
+      const currentPhase = phases[currentPhaseIndex];
+
+      // Clear any existing interval
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+
+      setBreathPhase(currentPhase.phase);
+      setBreathCountdown(currentPhase.duration);
+
+      // Countdown every second
+      let currentCount = currentPhase.duration;
+      countdownInterval = setInterval(() => {
+        if (!isActive) {
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+          }
+          return;
+        }
+
+        currentCount--;
+        if (currentCount > 0) {
+          setBreathCountdown(currentCount);
+        } else {
+          // Phase complete, move to next phase
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+          }
+          startNextPhase();
+        }
+      }, 1000);
     };
 
-    const interval = setInterval(cycle, 19000); // Full cycle
-    cycle(); // Start immediately
+    // Start with first phase (inhale)
+    currentPhaseIndex = -1; // Will be incremented to 0 in startNextPhase
+    startNextPhase();
 
-    return () => clearInterval(interval);
+    return () => {
+      isActive = false;
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+    };
   }, [breathingActive]);
 
   const startTimer = () => {
@@ -268,9 +316,9 @@ export function EmergencyHelpPage() {
 
             <div className="flex flex-col items-center space-y-8">
               {/* Breathing Circle Animation */}
-              <div className="relative w-64 h-64">
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80">
                 <div
-                  className={`absolute inset-0 rounded-full transition-all duration-1000 ${
+                  className={`absolute inset-0 rounded-full transition-all ${
                     breathPhase === 'inhale'
                       ? 'scale-100 bg-[#561F7A] opacity-30'
                       : breathPhase === 'hold'
@@ -284,16 +332,21 @@ export function EmergencyHelpPage() {
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <p className="text-3xl font-bold text-[#561F7A] capitalize">{breathPhase}</p>
-                    <p className="text-lg text-[#561F7A] mt-2 font-medium">
-                      {breathPhase === 'inhale' ? '4 sec' : breathPhase === 'hold' ? '7 sec' : '8 sec'}
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#561F7A] capitalize mb-2">
+                      {breathPhase}
+                    </p>
+                    <p className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#561F7A] font-mono">
+                      {breathCountdown}
+                    </p>
+                    <p className="text-sm sm:text-base text-[#561F7A] mt-2 font-medium">
+                      {breathPhase === 'inhale' ? 'seconds' : breathPhase === 'hold' ? 'seconds' : 'seconds'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="text-center max-w-md">
-                <p className="text-[#000000] text-base font-normal">
+              <div className="text-center max-w-md px-4">
+                <p className="text-[#000000] text-sm sm:text-base font-normal">
                   {breathPhase === 'inhale' && "Breathe in slowly through your nose..."}
                   {breathPhase === 'hold' && "Hold your breath gently..."}
                   {breathPhase === 'exhale' && "Exhale slowly through your mouth..."}
