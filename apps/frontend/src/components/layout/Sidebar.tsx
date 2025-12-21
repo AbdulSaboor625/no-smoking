@@ -158,7 +158,7 @@ export function Sidebar({ onClose, isMobile }: SidebarProps) {
                 className="h-5 w-5 flex-shrink-0 stroke-[#000000] hover:stroke-[#561F7A]"
                 strokeWidth={1.5}
               />
-              <span className="text-sm font-normal">
+              <span className="text-[20px] hover:font-semibold text-[#000000] hover:text-[#561F7A]">
                 Logout
               </span>
             </button>

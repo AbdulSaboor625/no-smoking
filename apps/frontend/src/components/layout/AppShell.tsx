@@ -70,8 +70,8 @@ export function AppShell({ children }: AppShellProps) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-          <p className="mt-4 text-gray-600"><Loader2 className="min-h-5 min-w-5 animate-spin" /> Loading...</p>
+          {/* <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div> */}
+          <p className="mt-4 text-[#561F7A] flex items-center justify-center gap-2 font-semibold text-2xl"><Loader2 className="min-h-12 min-w-12 animate-spin" /> Loading...</p>
         </div>
       </div>
     );
