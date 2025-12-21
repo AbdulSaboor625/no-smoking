@@ -8,14 +8,9 @@ interface DailyCoachingCardProps {
 export function DailyCoachingCard({ quitAttemptId }: DailyCoachingCardProps) {
   const { data, isLoading } = trpc.coaching.getToday.useQuery({ quitAttemptId });
 
+  // Don't show anything while loading to avoid extra skeleton
   if (isLoading) {
-    return (
-      <div className="bg-white border-2 border-blue-200 rounded-lg p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-1/3 mb-4" />
-        <div className="h-4 bg-gray-200 rounded w-full mb-2" />
-        <div className="h-4 bg-gray-200 rounded w-5/6" />
-      </div>
-    );
+    return null;
   }
 
   if (!data?.script) {

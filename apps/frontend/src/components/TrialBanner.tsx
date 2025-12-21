@@ -15,22 +15,25 @@ export function TrialBanner({ daysRemaining, onUpgradeClick }: TrialBannerProps)
 
   const colors = {
     high: {
-      bg: 'bg-red-50 border-red-200',
-      text: 'text-red-800',
-      icon: 'text-red-600',
-      button: 'bg-red-600 hover:bg-red-700 text-white',
+      bg: 'bg-[#FEF6E8] border-[#F9C015]',
+      text: 'text-[#561F7A]',
+      icon: 'text-[#561F7A]',
+      button: 'bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#131316]',
+      badge: 'bg-[#561F7A] text-white',
     },
     medium: {
-      bg: 'bg-orange-50 border-orange-200',
-      text: 'text-orange-800',
-      icon: 'text-orange-600',
-      button: 'bg-orange-600 hover:bg-orange-700 text-white',
+      bg: 'bg-[#F3EBF8] border-[#561F7A]/30',
+      text: 'text-[#561F7A]',
+      icon: 'text-[#561F7A]',
+      button: 'bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#131316]',
+      badge: 'bg-[#561F7A] text-white',
     },
     low: {
-      bg: 'bg-blue-50 border-blue-200',
-      text: 'text-blue-800',
-      icon: 'text-blue-600',
-      button: 'bg-blue-600 hover:bg-blue-700 text-white',
+      bg: 'bg-[#F3EBF8] border-[#561F7A]/20',
+      text: 'text-[#561F7A]',
+      icon: 'text-[#561F7A]',
+      button: 'bg-[#F9C015] hover:bg-[#F9C015]/90 text-[#131316]',
+      badge: 'bg-[#561F7A] text-white',
     },
   };
 
@@ -38,32 +41,38 @@ export function TrialBanner({ daysRemaining, onUpgradeClick }: TrialBannerProps)
 
   return (
     <div
-      className={`relative flex items-center justify-between gap-4 border-b px-4 py-3 ${theme.bg} border transition-all`}
+      className={`relative flex items-center justify-between gap-4 border-b px-4 sm:px-6 py-3 ${theme.bg} transition-all`}
     >
-      <div className="flex items-center gap-3">
-        <AlertCircle className={`h-5 w-5 flex-shrink-0 ${theme.icon}`} />
-        <p className={`text-sm font-medium ${theme.text}`}>
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className={`p-1.5 rounded-full ${theme.badge} flex-shrink-0`}>
+          <AlertCircle className="h-4 w-4" />
+        </div>
+        <p className={`text-sm sm:text-base font-semibold ${theme.text} flex items-center gap-2 flex-wrap`}>
           {daysRemaining === 0 ? (
             <span>Your free trial ends today!</span>
           ) : (
-            <span>
-              Free trial: <strong>{daysRemaining}</strong> {daysRemaining === 1 ? 'day' : 'days'}{' '}
-              remaining
-            </span>
+            <>
+              <span>Free trial:</span>
+              <span className={`px-2 py-0.5 rounded-md ${theme.badge} font-bold`}>
+                {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'}
+              </span>
+              <span>remaining</span>
+            </>
           )}
         </p>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
         <button
           onClick={onUpgradeClick}
-          className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-colors ${theme.button}`}
+          className={`rounded-[10px] px-4 py-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md ${theme.button}`}
         >
           Upgrade Now
         </button>
         <button
           onClick={() => setIsDismissed(true)}
-          className={`rounded-full p-1 ${theme.text} hover:bg-black/5`}
+          className={`rounded-full p-1.5 ${theme.text} hover:bg-[#561F7A]/10 transition-colors`}
+          aria-label="Dismiss banner"
         >
           <X className="h-4 w-4" />
         </button>

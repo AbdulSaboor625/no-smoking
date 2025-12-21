@@ -4,34 +4,65 @@ import {
   LayoutDashboard,
   TrendingUp,
   AlertTriangle,
-  Award,
+  Calendar,
   BarChart3,
   BookOpen,
   Settings,
   X,
-  HelpCircle
+  HelpCircle,
+  LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface SidebarProps {
   onClose?: () => void;
   isMobile?: boolean;
 }
 
-const navItems = [
+const overviewItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/education', label: 'EDUCATION', icon: BookOpen },
-  { path: '/triggers', label: 'AWARENESS', icon: AlertTriangle },
-  { path: '/milestones', label: 'QUIT DATE', icon: Award },
-  { path: '/statistics', label: 'TRIGGERS', icon: BarChart3 },
-  { path: '/progress', label: 'PROGRESS', icon: TrendingUp },
-  { path: '/emergency', label: 'WHAT TO DO IF', icon: HelpCircle },
-  { path: '/settings', label: 'Settings', icon: Settings },
+  { path: '/education', label: 'Education', icon: BookOpen },
+  { path: '/triggers', label: 'Awareness', icon: AlertTriangle },
+  { path: '/milestones', label: 'Quit Date', icon: Calendar },
+  { path: '/statistics', label: 'Triggers', icon: BarChart3 },
+  { path: '/progress', label: 'Progress', icon: TrendingUp },
+  { path: '/emergency', label: 'What to do if', icon: HelpCircle },
 ];
 
 export function Sidebar({ onClose, isMobile }: SidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    if (isMobile && onClose) {
+      onClose();
+    }
+  };
+
+  const handleLogoutClick = () => {
+    setIsLogoutDialogOpen(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setIsLogoutDialogOpen(false);
+    handleLogout();
+  };
 
   return (
     <motion.div
@@ -41,97 +72,126 @@ export function Sidebar({ onClose, isMobile }: SidebarProps) {
       transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       className="flex flex-col h-full bg-white border-r border-gray-200"
     >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="flex items-center justify-between p-6 border-b border-gray-200"
-      >
-        <Link to="/dashboard" className="flex items-center space-x-2 group">
-          <motion.img
-            src="/logo.png"
-            alt="QuitSmart Logo"
-            className="w-8 h-8 object-contain"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
-          />
-          <span className="font-bold text-lg text-gray-900 group-hover:text-purple-600 transition-colors">
-            QuitApp
-          </span>
-        </Link>
-        {isMobile && (
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+      <div className='p-6 h-full flex flex-col'>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 flex-shrink-0">
+          <Link to="/dashboard" className="flex items-center space-x-2 group">
+            <img
+              src="/assets/images/logo.svg"
+              alt="QuitSmart Logo"
+              className="w-[93px] h-[70px] object-contain"
+            />
+          </Link>
+          {isMobile && (
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
-          </motion.div>
-        )}
-      </motion.div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item, index) => {
-          const Icon = item.icon;
-          const isActive = location.pathname === item.path;
-
-          return (
-            <motion.div
-              key={item.path}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 + 0.2 }}
-            >
-              <Link
-                to={item.path}
-                onClick={() => isMobile && onClose?.()}
-                className={cn(
-                  'flex items-center space-x-3 px-4 py-3 rounded-lg transition-all relative overflow-hidden group',
-                  isActive
-                    ? 'bg-brand-purple-100 text-brand-purple-700 font-medium shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-100'
-                )}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="absolute left-0 top-0 bottom-0 w-1 bg-brand-purple-600 rounded-r"
-                    initial={false}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Icon className="h-5 w-5" />
-                </motion.div>
-                <span className="group-hover:translate-x-1 transition-transform">
-                  {item.label}
-                </span>
-                {!isActive && (
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-                    initial={false}
-                  />
-                )}
-              </Link>
-            </motion.div>
-          );
-        })}
-      </nav>
-
-      {/* Footer */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="p-4 border-t border-gray-200"
-      >
-        <div className="text-sm text-gray-500 text-center">
-          The New Way to Stop Smoking
+          )}
         </div>
-      </motion.div>
+
+        {/* Overview Section - Scrollable */}
+        <nav className="flex-1 overflow-y-auto pr-2 custom-scrollbar mb-6">
+          <div>
+            <span className='block text-sm font-normal text-[#9E9E9E] mb-4 uppercase'>Overview</span>
+            <div className="space-y-1">
+              {overviewItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => isMobile && onClose?.()}
+                    className={cn(
+                      'text-[20px] font-normal flex items-center gap-3 py-3 px-2 rounded transition-colors group',
+                      isActive
+                        ? 'text-[#561F7A] font-semibold'
+                        : 'text-[#000000] hover:text-[#561F7A] hover:font-semibold'
+                    )}
+                  >
+                    <Icon 
+                      className={cn(
+                        'h-[22px] w-[22px] flex-shrink-0 group-hover:font-semibold',
+                        isActive ? 'stroke-[#561F7A]' : 'stroke-[#000000] hover:font-semibold'
+                      )}
+                      strokeWidth={isActive ? 2 : 1.5}
+                    />
+                      {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </nav>
+
+        {/* Settings Section - Fixed at Bottom */}
+        <div className="flex-shrink-0">
+          <span className='block text-sm font-normal text-[#9E9E9E] mb-4 uppercase'>Settings</span>
+          <div className="space-y-1">
+            <Link
+              to="/settings"
+              onClick={() => isMobile && onClose?.()}
+              className={cn(
+                'text-[20px] flex items-center gap-3 py-3 px-2 rounded transition-colors group',
+                location.pathname === '/settings'
+                  ? 'text-[#561F7A] !font-semibold'
+                  : 'text-[#000000] hover:text-[#561F7A] hover:font-semibold'
+              )}
+            >
+              <Settings 
+                className={cn(
+                  'h-[22px] w-[22px] group-hover:font-semibold flex-shrink-0',
+                  location.pathname === '/settings' ? 'stroke-[#561F7A]' : 'stroke-[#000000]'
+                )}
+                strokeWidth={location.pathname === '/settings' ? 2 : 1.5}
+              />
+              <span className="text-[20px] group-hover:font-semibold">
+                Settings
+              </span>
+            </Link>
+            <button
+              onClick={handleLogoutClick}
+              className="flex items-center gap-3 py-2 px-2 rounded transition-colors w-full text-left text-[#000000] hover:text-[#561F7A]"
+            >
+              <LogOut 
+                className="h-5 w-5 flex-shrink-0 stroke-[#000000] hover:stroke-[#561F7A]"
+                strokeWidth={1.5}
+              />
+              <span className="text-[20px] hover:font-semibold text-[#000000] hover:text-[#561F7A]">
+                Logout
+              </span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Logout</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to logout? You will need to login again to access your account.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className='flex justify-center gap-4'>
+            <Button
+              variant="outline"
+              onClick={() => setIsLogoutDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleLogoutConfirm}
+            >
+              Logout
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
