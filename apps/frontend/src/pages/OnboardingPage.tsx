@@ -10,7 +10,7 @@ import { trpc } from '@/lib/trpc';
 import { type ProductType } from '@smoking-quit/shared-types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/stores/authStore';
-import { Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 
 const productOptions: { value: ProductType; label: string; description: string }[] = [
   { value: 'cigarettes', label: 'Cigarettes', description: 'Traditional cigarettes' },
@@ -437,15 +437,20 @@ export function OnboardingPage() {
           }
         `}</style>
       )}
-      <div className={`min-h-screen bg-white overflow-x-hidden ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-center justify-center p-2 sm:p-4'}`}>
-      <Card 
-        className={`${step === 6 ? 'w-full h-screen overflow-y-auto' : 'max-w-2xl w-full'} shadow-2xl border-0 rounded-none`} 
+      <div 
+        className={`-mx-[10px] min-h-screen overflow-x-hidden overflow-y-auto px-6 py-10 ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-center justify-center p-2 sm:p-4'}`}
         style={{ 
           backgroundColor: '#6B2C91', 
           backgroundImage: 'url(/assets/images/bg-pattern.png)', 
           backgroundSize: 'cover', 
           backgroundPosition: 'center', 
           backgroundRepeat: 'no-repeat',
+        }}
+      >
+      <Card 
+        className={`${step === 6 ? 'w-full h-screen overflow-y-auto' : 'max-w-2xl w-full'} shadow-2xl rounded-lg pt-3 border-none !bg-[#71309c]`} 
+        style={{ 
+          backgroundColor: 'transparent',
           ...(step === 6 && {
             scrollbarWidth: 'thin',
             scrollbarColor: '#F9C015 rgba(107, 44, 145, 0.2)',
@@ -509,8 +514,8 @@ export function OnboardingPage() {
                             ${isSelected
                               ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.02]'
                               : isHovered
-                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                              ? 'border-[#FFC107] bg-gradient-to-r from-[#FFC107]/25 to-[#FFC107]/15 shadow-md backdrop-blur-sm'
+                              : 'border-white/30 hover:border-white/50 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-sm shadow-sm'
                             }
                           `}
                           onMouseEnter={() => {
@@ -584,24 +589,22 @@ export function OnboardingPage() {
                               </div>
                             </div>
                             
-                            {/* Selection checkmark */}
+                            {/* Selection checkmark - positioned at top-right */}
                             {isSelected && (
-                              <div className="flex-shrink-0 ml-1 sm:ml-2">
-                                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
-                                  <svg 
-                                    className="w-4 h-4 sm:w-5 sm:h-5 text-white" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path 
-                                      strokeLinecap="round" 
-                                      strokeLinejoin="round" 
-                                      strokeWidth={3} 
-                                      d="M5 13l4 4L19 7" 
-                                    />
-                                  </svg>
-                                </div>
+                              <div className="absolute -top-2 -right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white flex items-center justify-center shadow-lg animate-in zoom-in duration-300 z-10">
+                                <svg 
+                                  className="w-4 h-4 sm:w-5 sm:h-5 text-[#AB0FB8]" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    strokeWidth={3} 
+                                    d="M5 13l4 4L19 7" 
+                                  />
+                                </svg>
                               </div>
                             )}
                           </div>
@@ -609,6 +612,12 @@ export function OnboardingPage() {
                       );
                     })}
                   </RadioGroup>
+                  <div className="flex justify-center items-center pt-4 sm:pt-6">
+                    <div className="flex items-center gap-2 text-white text-sm sm:text-base">
+                      <span>Already have an account?</span>
+                      <Link to="/login" className="text-[#FFC107] hover:text-[#c49005] font-bold transition-colors flex items-center gap-1 hover:translate-x-0.5">Login <ArrowRight className="w-4 h-4" /></Link>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -638,8 +647,8 @@ export function OnboardingPage() {
                             ${isSelected
                               ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
                               : isHovered
-                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                              ? 'border-[#FFC107] bg-gradient-to-br from-[#FFC107]/25 to-[#FFC107]/15 shadow-md backdrop-blur-sm'
+                              : 'border-white/30 hover:border-white/50 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-sm shadow-sm'
                             }
                           `}
                         >
@@ -658,9 +667,9 @@ export function OnboardingPage() {
                             {num}
                           </div>
                           {isSelected && (
-                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                            <div className="absolute -top-2 -right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white flex items-center justify-center shadow-lg animate-in zoom-in duration-300 z-10">
                               <svg 
-                                className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                                className="w-4 h-4 sm:w-5 sm:h-5 text-[#AB0FB8]" 
                                 fill="none" 
                                 stroke="currentColor" 
                                 viewBox="0 0 24 24"
@@ -707,8 +716,8 @@ export function OnboardingPage() {
                             ${isSelected
                               ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
                               : isHovered
-                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                              ? 'border-[#FFC107] bg-gradient-to-br from-[#FFC107]/25 to-[#FFC107]/15 shadow-md backdrop-blur-sm'
+                              : 'border-white/30 hover:border-white/50 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-sm shadow-sm'
                             }
                           `}
                         >
@@ -727,9 +736,9 @@ export function OnboardingPage() {
                             ${amount}
                           </div>
                           {isSelected && (
-                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                            <div className="absolute -top-2 -right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white flex items-center justify-center shadow-lg animate-in zoom-in duration-300 z-10">
                               <svg 
-                                className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                                className="w-4 h-4 sm:w-5 sm:h-5 text-[#AB0FB8]" 
                                 fill="none" 
                                 stroke="currentColor" 
                                 viewBox="0 0 24 24"
@@ -781,8 +790,8 @@ export function OnboardingPage() {
                             ${isSelected
                               ? 'border-[#FFC107] bg-[#FFC107] shadow-lg shadow-[#FFC107]/50 scale-[1.05]'
                               : isHovered
-                              ? 'border-[#FFC107] bg-[#FFC107]/20 shadow-md'
-                              : 'border-white/30 hover:border-white/60 bg-white/5 backdrop-blur-sm'
+                              ? 'border-[#FFC107] bg-gradient-to-br from-[#FFC107]/25 to-[#FFC107]/15 shadow-md backdrop-blur-sm'
+                              : 'border-white/30 hover:border-white/50 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-sm shadow-sm'
                             }
                           `}
                         >
@@ -801,9 +810,9 @@ export function OnboardingPage() {
                             {option.label}
                           </div>
                           {isSelected && (
-                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#AB0FB8] flex items-center justify-center animate-in zoom-in duration-300">
+                            <div className="absolute -top-2 -right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white flex items-center justify-center shadow-lg animate-in zoom-in duration-300 z-10">
                               <svg 
-                                className="w-3 h-3 sm:w-4 sm:h-4 text-white" 
+                                className="w-4 h-4 sm:w-5 sm:h-5 text-[#AB0FB8]" 
                                 fill="none" 
                                 stroke="currentColor" 
                                 viewBox="0 0 24 24"
@@ -900,7 +909,7 @@ export function OnboardingPage() {
                       <div className="w-full border-t border-white/20"></div>
                     </div>
                     <div className="relative flex justify-center">
-                      <span className="bg-[#6B2C91] px-4 text-white/70 text-sm">or</span>
+                      <span className="bg-[#71309c] px-4 text-white/70 text-sm">or</span>
                     </div>
                   </div>
 
@@ -1446,23 +1455,35 @@ export function OnboardingPage() {
 
               {/* Navigation Buttons */}
               {step > 1 && step !== 6 && step !== 7 && (
-                <div className="flex justify-between pt-6 border-t">
-                  <Button variant="outline" onClick={prevStep} className="text-black">
-                    Back
+                <div className="flex justify-between items-center pt-6 border-t border-white/20 px-3 sm:px-6">
+                  <Button 
+                    variant="outline" 
+                    onClick={prevStep} 
+                    className="bg-[#F9C015] hover:bg-[#c49005] text-[#000000] border-none font-semibold rounded-lg px-4 h-10 sm:h-12 transition-all flex items-center gap-2 hover:-translate-x-0.5"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back</span>
                   </Button>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-white text-sm sm:text-base">
                     <span>Already have an account?</span>
-                    <Link to="/login" className="text-[#FFC107] hover:text-[#c49005] font-bold">Login</Link>
+                    <Link 
+                      to="/login" 
+                      className="flex items-center gap-1 text-[#FFC107] hover:text-[#c49005] font-bold transition-all hover:translate-x-0.5"
+                    >
+                      <span>Login</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
           </CardContent>
+          
         </div>
       </Card>
       {/* Right side: Video (only for step 6) */}
       {step === 6 && (
-        <div className="w-full h-screen bg-[#fff] flex items-center justify-center overflow-hidden p-4 sm:p-6 lg:p-8"
+        <div className="w-full h-screen bg-[#6B2C91] flex items-center justify-center overflow-hidden p-4 sm:p-6 lg:p-8"
         >
           <div className="w-full h-full max-w-6xl relative rounded-xl overflow-hidden shadow-2xl border-4 border-[#F9C015]/40">
             <iframe 
