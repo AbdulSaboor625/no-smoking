@@ -2,23 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ChevronDown, BookOpen, Brain, Target, TrendingUp, Heart, Shield, Award, Users, 
-  CheckCircle, ArrowRight, Menu, X, DollarSign, Clock, Cigarette, Phone, 
-  Mail, Facebook, Twitter, Instagram, Youtube, Zap, BarChart3, Calendar
+  CheckCircle, ArrowRight, Menu, X, Phone, 
+  Mail, Facebook, Twitter, Instagram, Youtube,  BarChart3, Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-type AccordionId = 
-  | 'how-it-works' 
-  | 'understanding-addiction' 
-  | 'trigger-awareness' 
-  | 'progress-tracking' 
-  | 'one-day-commitment' 
-  | 'health-benefits' 
-  | 'coping-strategies' 
-  | 'milestones' 
-  | 'who-this-works-for' 
-  | 'what-makes-different' 
-  | 'getting-started';
 
 export function LandingPage() {
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -1240,14 +1227,14 @@ export function LandingPage() {
 
 // Accordion Component
 function AccordionSection({
-  id,
+  id = '',
   title,
   icon,
   isOpen,
   onToggle,
   children
 }: {
-  id: string;
+  id?: string;
   title: string;
   icon: React.ReactNode;
   isOpen: boolean;
@@ -1255,7 +1242,7 @@ function AccordionSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden hover:border-[#612F8D] transition-colors shadow-sm">
+    <div key={id} className="border border-gray-200 rounded-xl overflow-hidden hover:border-[#612F8D] transition-colors shadow-sm">
       <button
         onClick={onToggle}
         className="w-full px-6 py-5 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors text-left"

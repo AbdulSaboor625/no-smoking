@@ -61,33 +61,43 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-purple-500 to-brand-yellow-500 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full">
-        <CardHeader className="space-y-1">
-          <div className="flex justify-center mb-4">
-            <img src="/logo.png" alt="QuitSmart Logo" className="w-24 h-24 object-contain" />
+    <div
+      className="min-h-screen w-full overflow-y-auto flex items-center justify-center px-4 py-10"
+      style={{
+        backgroundColor: '#6B2C91',
+        backgroundImage: 'url(/assets/images/bg-pattern.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <Card className="w-full max-w-md bg-[#71309c] border-none shadow-2xl rounded-2xl">
+        <CardHeader className="space-y-3 pt-6 pb-2">
+          <div className="flex justify-center">
+            <img src="/logo.png" alt="QuitSmart Logo" className="w-20 h-20 object-contain drop-shadow-md" />
           </div>
-          <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
-          <CardDescription className="text-center">
+          <CardTitle className="text-2xl text-center text-white font-bold">Welcome Back</CardTitle>
+          <CardDescription className="text-center text-white/80">
             Log in to continue your quit journey
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-white font-semibold text-sm sm:text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
+                className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-[#F9C015] focus:ring-[#F9C015] rounded-lg"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-white font-semibold text-sm sm:text-base">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -95,25 +105,26 @@ export function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="h-12 bg-white/10 border-white/30 text-white placeholder:text-white/60 focus:border-[#F9C015] focus:ring-[#F9C015] rounded-lg"
               />
             </div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#F9C015] hover:bg-[#c49005] text-[#561F7A] font-semibold h-12 rounded-lg transition-all shadow-md hover:shadow-lg"
               size="lg"
               disabled={isLoading || !email || !password}
             >
               {isLoading ? 'Logging in...' : 'Log In'}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
-            <Link to="/onboarding" className="text-brand-purple-600 hover:underline font-medium">
+          <div className="mt-5 text-center text-sm text-white/80">
+            <span>Don't have an account? </span>
+            <Link to="/" className="text-[#F9C015] hover:text-[#c49005] font-semibold transition-colors">
               Get Started
             </Link>
           </div>
           <div className="mt-2 text-center">
-            <Link to="/" className="text-sm text-muted-foreground hover:underline">
+            <Link to="/" className="text-sm text-white/70 hover:text-white underline underline-offset-2">
               ← Back to Home
             </Link>
           </div>

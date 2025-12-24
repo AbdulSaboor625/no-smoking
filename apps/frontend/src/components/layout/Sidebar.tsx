@@ -176,7 +176,7 @@ export function Sidebar({ onClose, isMobile }: SidebarProps) {
               Are you sure you want to logout? You will need to login again to access your account.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className='flex justify-center gap-4'>
+          <DialogFooter className='flex justify-center gap-2 md:gap-1'>
             <Button
               variant="outline"
               onClick={() => setIsLogoutDialogOpen(false)}
