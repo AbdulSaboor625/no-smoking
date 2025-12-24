@@ -91,12 +91,12 @@ export function SubscriptionModal({ isOpen, onClose, daysRemaining }: Subscripti
           <div className="mb-6 rounded-[20px] bg-[#F3EBF8] p-6 border border-[#561F7A]/20">
             <div className="mb-4 text-center">
               <div className="flex items-baseline justify-center gap-2">
-                <span className="text-4xl sm:text-5xl font-bold text-[#561F7A]">$7.99</span>
-                <span className="text-lg sm:text-xl text-[#561F7A]/70">/year</span>
+                <span className="text-4xl sm:text-5xl font-bold text-[#561F7A]">$19.95</span>
+                <span className="text-lg sm:text-xl text-[#561F7A]/70">/month</span>
               </div>
-              <p className="mt-2 text-base sm:text-lg font-bold text-[#F9C015]">
+              {/* <p className="mt-2 text-base sm:text-lg font-bold text-[#F9C015]">
                 That's less than $0.67 per Month!
-              </p>
+              </p> */}
             </div>
 
             {/* Features */}
