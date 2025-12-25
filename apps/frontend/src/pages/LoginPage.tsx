@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/stores/authStore';
+import { Loader } from 'lucide-react';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -62,7 +63,7 @@ export function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full overflow-y-auto flex items-center justify-center px-4 py-10"
+      className="min-h-[100vh] max-h-[100vh] w-full overflow-y-auto flex items-center justify-center px-4 py-10"
       style={{
         backgroundColor: '#6B2C91',
         backgroundImage: 'url(/assets/images/bg-pattern.png)',
@@ -74,7 +75,7 @@ export function LoginPage() {
       <Card className="w-full max-w-md bg-[#71309c] border-none shadow-2xl rounded-2xl">
         <CardHeader className="space-y-3 pt-6 pb-2">
           <div className="flex justify-center">
-            <img src="/logo.png" alt="QuitSmart Logo" className="w-20 h-20 object-contain drop-shadow-md" />
+            <img src="/assets/images/logo-white.png" alt="QuitSmart Logo" className="w-20 h-20 object-contain drop-shadow-md" />
           </div>
           <CardTitle className="text-2xl text-center text-white font-bold">Welcome Back</CardTitle>
           <CardDescription className="text-center text-white/80">
@@ -114,18 +115,13 @@ export function LoginPage() {
               size="lg"
               disabled={isLoading || !email || !password}
             >
-              {isLoading ? 'Logging in...' : 'Log In'}
+              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : 'Log In'}
             </Button>
           </form>
           <div className="mt-5 text-center text-sm text-white/80">
             <span>Don't have an account? </span>
-            <Link to="/" className="text-[#F9C015] hover:text-[#c49005] font-semibold transition-colors">
+            <Link to="/" className="text-[#F9C015] hover:text-[#c49005] hover:underline font-semibold transition-colors">
               Get Started
-            </Link>
-          </div>
-          <div className="mt-2 text-center">
-            <Link to="/" className="text-sm text-white/70 hover:text-white underline underline-offset-2">
-              ← Back to Home
             </Link>
           </div>
         </CardContent>

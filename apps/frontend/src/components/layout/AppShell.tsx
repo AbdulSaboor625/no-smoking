@@ -86,7 +86,7 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F2F2F2]">
+    <div className="flex min-h-[100vh] max-h-[100vh] overflow-hidden bg-[#F2F2F2]">
       {/* Trial Banner - Only show for trial users, not paid users */}
       {isTrialing && daysRemaining >= 0 && !isPaid && (
         <div className="fixed top-0 left-0 right-0 z-30">
