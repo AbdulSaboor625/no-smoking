@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "node api.js && tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node api.js && node dist/server.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "db:generate": "drizzle-kit generate",
