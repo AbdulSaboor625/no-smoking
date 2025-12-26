@@ -95,7 +95,7 @@ export function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
               <Button
                 size="lg"
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/')}
                 className="text-base sm:text-lg md:text-xl px-6 sm:px-8 md:px-12 py-4 sm:py-6 md:py-8 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-bold shadow-2xl transform hover:scale-105 transition-all duration-200 border-4 border-yellow-300"
               >
                 <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
@@ -155,7 +155,7 @@ export function HomePage() {
               </p>
               <Button
                 size="lg"
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/')}
                 className="text-base sm:text-lg md:text-xl lg:text-2xl px-6 sm:px-10 md:px-14 lg:px-16 py-4 sm:py-6 md:py-7 lg:py-8 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-bold shadow-2xl transform hover:scale-110 transition-all duration-200"
               >
                 Begin Your Journey Free
