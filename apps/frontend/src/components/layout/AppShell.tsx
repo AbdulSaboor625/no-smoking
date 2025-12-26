@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { TrialBanner } from '../TrialBanner';
 import { SubscriptionModal } from '../SubscriptionModal';
+import { StartTrialModal } from '../StartTrialModal';
 import { PaymentWall } from '../PaymentWall';
 import { trpc } from '../../lib/trpc';
 import DashboardHeader from './dashboard-header';
@@ -15,6 +16,7 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [showStartTrialModal, setShowStartTrialModal] = useState(false);
 
   // Check subscription status
   const { data: subscriptionStatus, isLoading } = trpc.subscription.getStatus.useQuery();
@@ -31,9 +33,18 @@ export function AppShell({ children }: AppShellProps) {
       )
     : 0;
 
+  const needsToStartTrial = subscriptionStatus?.status === 'incomplete';
   const isTrialing = subscriptionStatus?.status === 'trialing';
   const isPaid = subscriptionStatus?.status === 'active';
   const hasAccess = accessCheck?.hasAccess ?? true; // Default to true while loading
+
+  // Show start trial modal if user needs to start trial
+  useEffect(() => {
+    if (needsToStartTrial) {
+      // Show immediately - user must start trial to access app
+      setShowStartTrialModal(true);
+    }
+  }, [needsToStartTrial]);
 
   // Show modal on first login if user is in trial (but not if already paid)
   useEffect(() => {
@@ -54,16 +65,22 @@ export function AppShell({ children }: AppShellProps) {
     return undefined;
   }, [isTrialing, daysRemaining, isPaid]);
 
-  // Handle payment success notification
+  // Handle trial start and payment success notifications
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.get('trial') === 'started' && isTrialing) {
+      // Clear URL params after trial started
+      window.history.replaceState({}, '', window.location.pathname);
+      console.log('✅ Free trial started! Enjoy 7 days of full access.');
+    }
+    
     if (urlParams.get('payment') === 'success' && isPaid) {
       // Clear URL params after successful payment
       window.history.replaceState({}, '', window.location.pathname);
-      // Optionally show success toast (can be enhanced with toast library)
       console.log('✅ Payment successful! Subscription activated.');
     }
-  }, [isPaid]);
+  }, [isTrialing, isPaid]);
 
   // If loading, show loading state
   if (isLoading) {
@@ -73,6 +90,21 @@ export function AppShell({ children }: AppShellProps) {
           {/* <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div> */}
           <p className="mt-4 text-[#561F7A] flex items-center justify-center gap-2 font-semibold text-2xl"><Loader2 className="min-h-12 min-w-12 animate-spin" /> Loading...</p>
         </div>
+      </div>
+    );
+  }
+
+  // If user needs to start trial, show start trial modal (block access)
+  if (needsToStartTrial) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#F2F2F2]">
+        <StartTrialModal 
+          isOpen={showStartTrialModal} 
+          onClose={() => {
+            // User can't close this modal - they must start trial or logout
+            // Only allow closing if they want to logout
+          }} 
+        />
       </div>
     );
   }
@@ -126,6 +158,12 @@ export function AppShell({ children }: AppShellProps) {
         isOpen={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
         daysRemaining={daysRemaining}
+      />
+
+      {/* Start Trial Modal (shown when needed) */}
+      <StartTrialModal
+        isOpen={showStartTrialModal && needsToStartTrial}
+        onClose={() => setShowStartTrialModal(false)}
       />
     </div>
   );

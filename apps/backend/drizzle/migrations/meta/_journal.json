@@ -50,6 +50,13 @@
       "when": 1764791534635,
       "tag": "0006_messy_jackpot",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1735142400000,
+      "tag": "0007_update_subscription_model",
+      "breakpoints": true
     }
   ]
 }

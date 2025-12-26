@@ -117,19 +117,27 @@ async function handleCheckoutSessionCompleted(
   // Fetch subscription details
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
-  // Update user subscription
+  // Update user subscription with trial dates
+  const updateData: any = {
+    stripeSubscriptionId: subscriptionId,
+    subscriptionStatus: subscription.status,
+    subscriptionPlan: 'monthly',
+    currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+    updatedAt: new Date(),
+  };
+
+  // If subscription is in trial, set trial dates
+  if (subscription.status === 'trialing' && subscription.trial_end) {
+    updateData.trialStartDate = new Date((subscription as any).trial_start * 1000);
+    updateData.trialEndDate = new Date(subscription.trial_end * 1000);
+  }
+
   await db
     .update(profiles)
-    .set({
-      stripeSubscriptionId: subscriptionId,
-      subscriptionStatus: subscription.status,
-      subscriptionPlan: 'yearly',
-      currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
-      updatedAt: new Date(),
-    })
+    .set(updateData)
     .where(eq(profiles.id, user.id));
 
-  fastify.log.info({ userId: user.id, subscriptionId }, 'Subscription activated');
+  fastify.log.info({ userId: user.id, subscriptionId, status: subscription.status }, 'Subscription activated');
 }
 
 // Handle subscription updated
@@ -151,15 +159,23 @@ async function handleSubscriptionUpdated(
     return;
   }
 
-  // Update subscription status
+  // Update subscription status with trial dates if applicable
+  const updateData: any = {
+    stripeSubscriptionId: subscription.id,
+    subscriptionStatus: subscription.status,
+    currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+    updatedAt: new Date(),
+  };
+
+  // If subscription is in trial, update trial dates
+  if (subscription.status === 'trialing' && subscription.trial_end) {
+    updateData.trialStartDate = new Date((subscription as any).trial_start * 1000);
+    updateData.trialEndDate = new Date(subscription.trial_end * 1000);
+  }
+
   await db
     .update(profiles)
-    .set({
-      stripeSubscriptionId: subscription.id,
-      subscriptionStatus: subscription.status,
-      currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
-      updatedAt: new Date(),
-    })
+    .set(updateData)
     .where(eq(profiles.id, user.id));
 
   fastify.log.info({ userId: user.id, status: subscription.status }, 'Subscription updated');

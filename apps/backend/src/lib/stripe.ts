@@ -17,11 +17,11 @@ export { STRIPE_ENABLED };
 
 // Stripe configuration constants
 export const STRIPE_CONFIG = {
-  YEARLY_PRICE_ID: process.env.STRIPE_YEARLY_PRICE_ID || '',
-  YEARLY_PRICE_AMOUNT: 799, // $7.99 in cents
+  MONTHLY_PRICE_ID: process.env.STRIPE_MONTHLY_PRICE_ID || '',
+  MONTHLY_PRICE_AMOUNT: 1995, // $19.95 in cents
   TRIAL_DAYS: 7,
   CURRENCY: 'usd',
-  PRODUCT_NAME: 'Smoking Quit App - Annual Subscription',
+  PRODUCT_NAME: 'Smoking Quit App - Monthly Subscription',
 } as const;
 
 // Helper to check if trial has expired

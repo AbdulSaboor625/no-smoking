@@ -73,19 +73,16 @@ export async function authRoutes(fastify: FastifyInstance) {
       // Generate user ID
       const userId = Math.random().toString(36).substring(7);
 
-      // Calculate trial end date (7 days from now)
-      const trialStartDate = new Date();
-      const trialEndDate = calculateTrialEndDate(trialStartDate);
-
-      // Create profile in database with password hash and trial dates
+      // Create profile in database with password hash
+      // User starts with 'incomplete' status - they need to provide payment details to start trial
       await db.insert(profiles).values({
         id: userId,
         email: body.email,
         username: body.username,
         passwordHash: passwordHash,
-        subscriptionStatus: 'trialing',
-        trialStartDate,
-        trialEndDate,
+        subscriptionStatus: 'incomplete',
+        trialStartDate: null,
+        trialEndDate: null,
       });
 
       // Generate JWT

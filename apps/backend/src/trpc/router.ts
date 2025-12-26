@@ -669,17 +669,26 @@ export const appRouter = router({
             .where(eq(profiles.id, ctx.userId));
         }
 
-        // Create checkout session
+        // Create checkout session with trial
         const session = await stripe.checkout.sessions.create({
           customer: customerId,
           mode: 'subscription',
           payment_method_types: ['card'],
           line_items: [
             {
-              price: STRIPE_CONFIG.YEARLY_PRICE_ID,
+              price: STRIPE_CONFIG.MONTHLY_PRICE_ID,
               quantity: 1,
             },
           ],
+          subscription_data: {
+            trial_period_days: STRIPE_CONFIG.TRIAL_DAYS,
+            trial_settings: {
+              end_behavior: {
+                missing_payment_method: 'cancel',
+              },
+            },
+          },
+          payment_method_collection: 'always', // Always collect payment method upfront
           success_url: input.successUrl,
           cancel_url: input.cancelUrl,
           metadata: {
