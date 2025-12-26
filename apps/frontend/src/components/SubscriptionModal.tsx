@@ -10,45 +10,27 @@ interface SubscriptionModalProps {
 
 export function SubscriptionModal({ isOpen, onClose, daysRemaining }: SubscriptionModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const createCheckoutMutation = trpc.subscription.createCheckoutSession.useMutation();
+  const createBillingPortalMutation = trpc.subscription.createBillingPortalSession.useMutation();
 
   if (!isOpen) return null;
 
-  const handleSubscribe = async () => {
+  const handleManageBilling = async () => {
     setIsLoading(true);
     try {
-      const result = await createCheckoutMutation.mutateAsync({
-        successUrl: `${window.location.origin}/dashboard?payment=success`,
-        cancelUrl: `${window.location.origin}/dashboard?payment=canceled`,
+      const result = await createBillingPortalMutation.mutateAsync({
+        returnUrl: `${window.location.origin}/dashboard`,
       });
 
-      // @ts-ignore - testMode is optional
-      if (result.testMode) {
-        // TEST MODE: Show alert instead of redirecting
-        alert(
-          '🧪 TEST MODE - Stripe Not Configured\n\n' +
-          'This would normally redirect to Stripe Checkout.\n\n' +
-          'To enable real payments:\n' +
-          '1. Set up Stripe account\n' +
-          '2. Add STRIPE_SECRET_KEY to backend/.env\n' +
-          '3. See STRIPE_SETUP.md for details\n\n' +
-          'For now, you can see the UI and flow!'
-        );
-        setIsLoading(false);
-        onClose();
-        return;
-      }
-
       if (result.url) {
-        // PRODUCTION: Redirect to Stripe checkout
+        // Redirect to Stripe billing portal
         window.location.href = result.url;
       } else {
-        alert('No checkout URL returned. Please try again.');
+        alert('Unable to open billing portal. Please try again.');
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Failed to create checkout session:', error);
-      alert('Failed to start checkout. Please try again.');
+      console.error('Failed to open billing portal:', error);
+      alert('Unable to access billing settings. Please try again.');
       setIsLoading(false);
     }
   };
@@ -72,17 +54,17 @@ export function SubscriptionModal({ isOpen, onClose, daysRemaining }: Subscripti
           <div className="mb-6 text-center">
             <img src="/assets/images/logo.svg" alt="QuitApp Logo" className="w-16 h-16 mx-auto mb-4" />
             <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-[#561F7A]">
-              Unlock Your Journey
+              Your Free Trial
             </h2>
             <div className="space-y-2">
               <p className="text-base sm:text-lg font-bold text-[#F9C015]">
-                7 DAY FREE TRIAL
+                {daysRemaining} {daysRemaining === 1 ? 'DAY' : 'DAYS'} REMAINING
               </p>
               <p className="text-sm text-[#561F7A]">
-                You have <span className="font-bold">{daysRemaining}</span> {daysRemaining === 1 ? 'day' : 'days'} left in your free trial
+                After your trial, you'll be charged <span className="font-bold">$19.95/month</span>
               </p>
               <p className="text-xs sm:text-sm font-semibold text-[#561F7A]">
-                CANCEL ANY TIME
+                CANCEL ANYTIME IN BILLING PORTAL
               </p>
             </div>
           </div>
@@ -124,9 +106,9 @@ export function SubscriptionModal({ isOpen, onClose, daysRemaining }: Subscripti
         <div className="flex-shrink-0 px-6 sm:px-8 pb-4 sm:pb-6 pt-4 border-t border-[#F2F2F2]">
           {/* CTA Button */}
           <button
-            onClick={handleSubscribe}
+            onClick={handleManageBilling}
             disabled={isLoading}
-            className="w-full rounded-[10px] bg-[#F9C015] py-4 font-semibold text-[#131316] shadow-lg transition-all hover:bg-[#F9C015]/90 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-[10px] bg-[#561F7A] py-4 font-semibold text-white shadow-lg transition-all hover:bg-[#561F7A]/90 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
@@ -134,13 +116,13 @@ export function SubscriptionModal({ isOpen, onClose, daysRemaining }: Subscripti
                 Loading...
               </span>
             ) : (
-              'QUIT NOW'
+              'MANAGE SUBSCRIPTION'
             )}
           </button>
 
           {/* Footer */}
           <p className="mt-4 text-center text-xs text-[#561F7A]/70">
-            Cancel anytime. No hidden fees.
+            Cancel or update payment method anytime
           </p>
         </div>
       </div>

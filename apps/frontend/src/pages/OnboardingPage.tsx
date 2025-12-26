@@ -417,44 +417,40 @@ export function OnboardingPage() {
 
   return (
     <>
-      {/* Custom scrollbar styles for step 6 */}
-      {step === 6 && (
-        <style>{`
-          .overflow-y-auto::-webkit-scrollbar {
-            width: 10px;
-          }
-          .overflow-y-auto::-webkit-scrollbar-track {
-            background: rgba(107, 44, 145, 0.2);
-            border-radius: 10px;
-          }
-          .overflow-y-auto::-webkit-scrollbar-thumb {
-            background: #F9C015;
-            border-radius: 10px;
-            border: 2px solid rgba(107, 44, 145, 0.1);
-          }
-          .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-            background: #FFC107;
-          }
-        `}</style>
-      )}
+      {/* Custom scrollbar styles for main container */}
+      <style>{`
+        .main-scroll-container::-webkit-scrollbar {
+          width: 10px;
+        }
+        .main-scroll-container::-webkit-scrollbar-track {
+          background: rgba(107, 44, 145, 0.2);
+          border-radius: 10px;
+        }
+        .main-scroll-container::-webkit-scrollbar-thumb {
+          background: #F9C015;
+          border-radius: 10px;
+          border: 2px solid rgba(107, 44, 145, 0.1);
+        }
+        .main-scroll-container::-webkit-scrollbar-thumb:hover {
+          background: #FFC107;
+        }
+      `}</style>
       <div 
-        className={`-mx-[10px] min-h-screen overflow-x-hidden overflow-y-auto px-6 py-10 ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-center justify-center p-2 sm:p-4'}`}
+        className={`-ml-2 main-scroll-container max-h-[100vh] min-h-screen overflow-x-hidden overflow-y-auto px-6 py-10 ${step === 6 ? 'grid grid-cols-1 lg:grid-cols-2 gap-0' : 'flex items-start justify-center p-2 sm:p-4'}`}
         style={{ 
           backgroundColor: '#6B2C91', 
           backgroundImage: 'url(/assets/images/bg-pattern.png)', 
           backgroundSize: 'cover', 
           backgroundPosition: 'center', 
           backgroundRepeat: 'no-repeat',
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#F9C015 rgba(107, 44, 145, 0.2)',
         }}
       >
       <Card 
-        className={`${step === 6 ? 'w-full h-screen overflow-y-auto' : 'max-w-2xl w-full'} shadow-2xl rounded-lg pt-3 border-none !bg-[#71309c]`} 
+        className={`${step === 6 ? 'w-full max-h-[100vh] overflow-y-auto' : 'max-w-2xl w-full my-4 sm:my-6'} shadow-2xl rounded-lg pt-3 border-none !bg-[#71309c]`} 
         style={{ 
           backgroundColor: 'transparent',
-          ...(step === 6 && {
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#F9C015 rgba(107, 44, 145, 0.2)',
-          })
         }}
       >
         <div className='max-w-[633px] mx-auto'>
@@ -471,7 +467,7 @@ export function OnboardingPage() {
               </p>
             </div>
             {step !== 6 && (
-              <CardTitle className="text-xl sm:text-2xl md:text-3xl text-center font-bold text-white mb-2 px-2">
+              <CardTitle className="text-lg sm:text-2xl md:text-3xl text-center font-bold text-white !mb-4 px-2">
                 {getStepTitle()}
               </CardTitle>
             )}
@@ -481,7 +477,7 @@ export function OnboardingPage() {
               </CardDescription>
             )}
           </CardHeader>
-          <CardContent className={`${step === 1 ? "pb-4 sm:pb-8" : ""} px-3 sm:px-0`}>
+          <CardContent className={`${step === 1 ? "pb-4 sm:pb-8" : step === 6 ? "pb-6 sm:pb-8" : "pb-8 sm:pb-10"} px-3 sm:px-0`}>
             <div className="space-y-6">
               {/* Step 1: Product Type - Interactive Cards */}
               {step === 1 && (
@@ -656,7 +652,7 @@ export function OnboardingPage() {
                             <div className="absolute inset-0 rounded-xl border-2 border-[#FFC107] animate-pulse" />
                           )}
                           <div className={`
-                            text-2xl sm:text-3xl md:text-4xl font-bold transition-colors duration-300
+                            text-lg sm:text-2xl md:text-4xl font-bold transition-colors duration-300
                             ${isSelected 
                               ? 'text-gray-900' 
                               : isHovered 
@@ -1455,7 +1451,7 @@ export function OnboardingPage() {
 
               {/* Navigation Buttons */}
               {step > 1 && step !== 6 && step !== 7 && (
-                <div className="flex justify-between items-center pt-6 border-t border-white/20 px-3 sm:px-6">
+                <div className="flex justify-between items-center flex-col-reverse sm:flex-row gap-4 sm:gap-0 pt-6 border-t border-white/20 px-0 sm:px-6">
                   <Button 
                     variant="outline" 
                     onClick={prevStep} 

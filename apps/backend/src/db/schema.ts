@@ -14,9 +14,9 @@ export const profiles = pgTable('profiles', {
   // Subscription fields
   stripeCustomerId: varchar('stripe_customer_id', { length: 255 }).unique(),
   stripeSubscriptionId: varchar('stripe_subscription_id', { length: 255 }),
-  subscriptionStatus: varchar('subscription_status', { length: 50 }).default('trialing').notNull(), // trialing, active, past_due, canceled, incomplete
-  subscriptionPlan: varchar('subscription_plan', { length: 50 }), // yearly
-  trialStartDate: timestamp('trial_start_date', { withTimezone: true }).defaultNow(),
+  subscriptionStatus: varchar('subscription_status', { length: 50 }).default('incomplete').notNull(), // incomplete, trialing, active, past_due, canceled
+  subscriptionPlan: varchar('subscription_plan', { length: 50 }), // monthly
+  trialStartDate: timestamp('trial_start_date', { withTimezone: true }),
   trialEndDate: timestamp('trial_end_date', { withTimezone: true }),
   currentPeriodEnd: timestamp('current_period_end', { withTimezone: true }),
 
