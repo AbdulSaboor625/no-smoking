@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 import { db } from '../db/db.js';
 import { profiles } from '../db/schema.js';
-import { calculateTrialEndDate } from '../lib/stripe.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const JWT_EXPIRES_IN = '7d';
