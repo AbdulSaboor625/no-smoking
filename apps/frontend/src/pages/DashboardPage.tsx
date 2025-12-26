@@ -53,7 +53,7 @@ export function DashboardPage() {
       <AppShell title="Dashboard">
         <div className="p-6 flex flex-col items-center justify-center space-y-4">
           <p className="text-muted-foreground">No active quit attempt found</p>
-          <Button onClick={() => navigate('/onboarding')}>Start Your Journey</Button>
+          <Button onClick={() => navigate('/')}>Start Your Journey</Button>
         </div>
       </AppShell>
     );
